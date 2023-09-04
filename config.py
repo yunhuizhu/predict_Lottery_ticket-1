@@ -39,6 +39,10 @@ name_path = {
         "name": "福彩3D",
         "path": "data/sd/"
     },
+    "gdfc36x7": {
+        "name": "广东福彩36选7",
+        "path": "data/gdfc36x7/"
+    },
 }
 
 model_path = os.getcwd() + "/model/"

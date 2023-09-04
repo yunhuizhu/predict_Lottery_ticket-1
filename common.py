@@ -12,6 +12,8 @@ import datetime
 import numpy as np
 import tensorflow as tf
 import warnings
+import asyncio
+from pyppeteer import launch
 
 
 def get_data_run(name, cq=0):
@@ -19,13 +21,21 @@ def get_data_run(name, cq=0):
     :param name: 玩法名称
     :return:
     """
-    current_number = get_current_number(name)
+
+    current_number = 0
+    get_current_number(name)
+    if name =="gdfc36x7":
+        current_number= get_current_number_gdfc36x7()
+    else:
+        current_number = get_current_number(name)
     logger.info("【{}】最新一期期号：{}".format(name_path[name]["name"], current_number))
     logger.info("正在获取【{}】数据。。。".format(name_path[name]["name"]))
     if not os.path.exists(name_path[name]["path"]):
         os.makedirs(name_path[name]["path"])
     if cq == 1 and name == "kl8":
         data = spider_cq(name, 1, current_number, "train")
+    elif name =="gdfc36x7":
+        data = spider_gdfc36x7(name, 1, current_number, "train")
     else:
         data = spider(name, 1, current_number, "train")
     if "data" in os.listdir(os.getcwd()):
@@ -45,6 +55,9 @@ def get_url(name):
     elif name in ["kl8"]:
         url = "https://datachart.500.com/{}/zoushi/".format(name)
         path = "newinc/jbzs_redblue.php?from=&to=&shujcount=0&sort=1&expect=-1"
+    elif name in ["gdfc36x7"]:
+        url = "https://tools.17500.cn/tb/{}/hmfb".format(name)
+        path = "?start={}&end={}&limit={}"
     return url, path
 
 def get_current_number(name):
@@ -58,14 +71,37 @@ def get_current_number(name):
         r = requests.get("{}{}".format(url, "history.shtml"), verify=False)
     elif name in ["kl8"]:
         r = requests.get("{}{}".format(url, "newinc/jbzs_redblue.php"), verify=False)
+    elif name in ["gdfc36x7"]:
+        r = requests.get("{}{}".format(url), verify=False)
     r.encoding = "gb2312"
     soup = BeautifulSoup(r.text, "lxml")
     if name in ["kl8"]:
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="to")["value"]
+    elif name in ["gdfc36x7"]:
+        current_num = soup.find("div", id="operation").find("input", id="qs_end")["value"]
     else:
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
     return current_num
+def get_current_number_gdfc36x7(name):
+    browser = await launch()
+    page = await browser.newPage()
+    await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
 
+    content = await page.content()
+    soup = BeautifulSoup(content, 'html.parser')
+
+    tbody = soup.find('tbody', {'id': 'body'})
+    trs = tbody.find_all('tr')
+    trs.reverse()
+    for tr in trs:
+        tds = tr.find_all('td', {'class': 'bc'})
+        if len(tds) == 2 and tds[0].text.isdigit():
+            current_num = tds[0].text.strip()
+            print(tds[0].text, tds[1].text.replace('|', ','))
+            break
+
+    await browser.close()
+    return current_num
 def spider_cq(name="kl8", start=1, end=999999, mode="train", windows_size=0):
     if name == "kl8" and mode == "train":
         url = "https://data.917500.cn/kl81000_cq_asc.txt"
@@ -208,6 +244,67 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 data.append(item)
             else:
                 logger.warning("抱歉，没有找到数据源！")
+        return pd.DataFrame(data)
+
+def spider_gdfc36x7(name="gdfc36x7", start=1, end=999999, mode="train", windows_size=0):
+    """ 爬取历史数据
+    :param name 玩法
+    :param start 开始一期
+    :param end 最近一期
+    :param mode 模式，train：训练模式，predict：预测模式（训练模式会保持文件）
+    :return:
+    """
+    if mode == "train":
+        browser = await launch()
+        page = await browser.newPage()
+        await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
+
+        content = await page.content()
+        soup = BeautifulSoup(content, 'html.parser')
+
+        tbody = soup.find('tbody', {'id': 'body'})
+        trs = tbody.find_all('tr')
+        trs.reverse()
+        data = []
+        for tr in trs:
+            item = dict()
+            tds = tr.find_all('td', {'class': 'bc'})
+            if len(tds) == 2 and tds[0].text.isdigit():
+                item[u"期数"] = tds[0].text.strip()
+                numlist = tds[1].text.replace('|', ',').strip().split(",")
+                # if name == "qxc":
+                #     red_nums = 7
+                # elif name in ["pls", "sd"]:
+                #     red_nums = 3
+                red_nums = len(numlist)
+                for i in range(red_nums):
+                    item[u"红球_{}".format(i + 1)] = numlist[i]
+                data.append(item)
+                # print(tds[0].text, tds[1].text.replace('|', ','))
+
+        await browser.close()
+        df = pd.DataFrame(data)
+        df.to_csv("{}{}".format(name_path[name]["path"], data_file_name), encoding="utf-8")
+        return pd.DataFrame(data)
+
+    elif mode == "predict":
+        ori_data = pd.read_csv("{}{}".format(name_path[name]["path"], data_file_name))
+        data = []
+        if windows_size > 0:
+            ori_data = ori_data[0:windows_size]
+        for i in range(len(ori_data)):
+            item = dict()
+            if (ori_data.iloc[i, 1] < int(start) or ori_data.iloc[i, 1] > int(end)) and windows_size == 0:
+                continue
+            # if name == "qxc":
+            #     red_nums = 7
+            # elif name in ["pls", "sd"]:
+            #     red_nums = 3
+            red_nums = len(ori_data.columns) - 2
+            item[u"期数"] = ori_data.iloc[i, 1]
+            for j in range(red_nums):
+                item[u"红球_{}".format(j+1)] = ori_data.iloc[i, j+2]
+            data.append(item)
         return pd.DataFrame(data)
 
 filedata = []
