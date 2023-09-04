@@ -23,9 +23,8 @@ def get_data_run(name, cq=0):
     """
 
     current_number = 0
-    get_current_number(name)
     if name =="gdfc36x7":
-        current_number= get_current_number_gdfc36x7()
+        current_number= asyncio.run(get_current_number_gdfc36x7(name))
     else:
         current_number = get_current_number(name)
     logger.info("【{}】最新一期期号：{}".format(name_path[name]["name"], current_number))
@@ -35,7 +34,7 @@ def get_data_run(name, cq=0):
     if cq == 1 and name == "kl8":
         data = spider_cq(name, 1, current_number, "train")
     elif name =="gdfc36x7":
-        data = spider_gdfc36x7(name, 1, current_number, "train")
+        data = asyncio.run(spider_gdfc36x7(name, 1, current_number, "train"))
     else:
         data = spider(name, 1, current_number, "train")
     if "data" in os.listdir(os.getcwd()):
@@ -71,18 +70,17 @@ def get_current_number(name):
         r = requests.get("{}{}".format(url, "history.shtml"), verify=False)
     elif name in ["kl8"]:
         r = requests.get("{}{}".format(url, "newinc/jbzs_redblue.php"), verify=False)
-    elif name in ["gdfc36x7"]:
-        r = requests.get("{}{}".format(url), verify=False)
     r.encoding = "gb2312"
     soup = BeautifulSoup(r.text, "lxml")
     if name in ["kl8"]:
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="to")["value"]
-    elif name in ["gdfc36x7"]:
-        current_num = soup.find("div", id="operation").find("input", id="qs_end")["value"]
+    elif name in ["sd"]:
+        current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
+        current_num = str(int(current_num) + 1)
     else:
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
     return current_num
-def get_current_number_gdfc36x7(name):
+async def get_current_number_gdfc36x7(name):
     browser = await launch()
     page = await browser.newPage()
     await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
@@ -149,7 +147,8 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
     """
     if mode == "train":
         url, path = get_url(name)
-        limit = int(end) - int(start) + 1
+        # limit = int(end) - int(start) + 1
+        limit = 365
         url = "{}{}".format(url, path.format(int(start), int(end), limit))
         r = requests.get(url=url, verify=False)
         r.encoding = "gb2312"
@@ -159,6 +158,7 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
         elif name in ["qxc", "pls", "sd"]:
             trs = soup.find("div", class_="wrap_datachart").find("table", id="tablelist").find_all("tr")
         data = []
+        flag = 1;
         for tr in trs:
             item = dict()
             if name == "ssq":
@@ -176,6 +176,14 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 data.append(item)
             elif name in ["pls", "sd", "qxc"]:
                 if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
+                    if name in ["sd"] and flag ==1:
+                        item[u"期数"] = get_current_number(name)
+                        numlist=['6','8','0']
+                        red_nums = len(numlist)
+                        for i in range(red_nums):
+                            item[u"红球_{}".format(i + 1)] = numlist[i]
+                        data.append(item)
+                        flag =0
                     continue
                 item[u"期数"] = tr.find_all("td")[0].get_text().strip()
                 numlist = tr.find_all("td")[1].get_text().strip().split(" ")
@@ -246,7 +254,7 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 logger.warning("抱歉，没有找到数据源！")
         return pd.DataFrame(data)
 
-def spider_gdfc36x7(name="gdfc36x7", start=1, end=999999, mode="train", windows_size=0):
+async def spider_gdfc36x7(name="gdfc36x7", start=1, end=999999, mode="train", windows_size=0):
     """ 爬取历史数据
     :param name 玩法
     :param start 开始一期
