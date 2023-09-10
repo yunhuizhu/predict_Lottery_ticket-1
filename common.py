@@ -178,7 +178,7 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
                     if name in ["sd"] and flag ==1:
                         item[u"期数"] = get_current_number(name)
-                        numlist=['6','8','0']
+                        numlist=['4','8','6']
                         red_nums = len(numlist)
                         for i in range(red_nums):
                             item[u"红球_{}".format(i + 1)] = numlist[i]
@@ -304,14 +304,9 @@ async def spider_gdfc36x7(name="gdfc36x7", start=1, end=999999, mode="train", wi
             item = dict()
             if (ori_data.iloc[i, 1] < int(start) or ori_data.iloc[i, 1] > int(end)) and windows_size == 0:
                 continue
-            # if name == "qxc":
-            #     red_nums = 7
-            # elif name in ["pls", "sd"]:
-            #     red_nums = 3
-            red_nums = len(ori_data.columns) - 2
             item[u"期数"] = ori_data.iloc[i, 1]
-            for j in range(red_nums):
-                item[u"红球_{}".format(j+1)] = ori_data.iloc[i, j+2]
+            for j in range(7):
+                item[u"红球_{}".format(j + 1)] = ori_data.iloc[i, j + 2]
             data.append(item)
         return pd.DataFrame(data)
 
@@ -517,6 +512,13 @@ def get_final_result(name, predict_features, mode=0):
             b_name: int(res) for b_name, res in zip(ball_name_list, pred_result_list)
         }
     elif name == "kl8":
+        red_pred, red_name_list = get_red_ball_predict_result(predict_features, m_args["red_sequence_len"], m_args["windows_size"])
+        ball_name_list = ["{}_{}".format(name[mode], i) for name, i in red_name_list]
+        pred_result_list = red_pred[0].tolist()
+        return {
+            b_name: int(res) + 1 for b_name, res in zip(ball_name_list, pred_result_list)
+        }
+    elif name == "gdfc36x7":
         red_pred, red_name_list = get_red_ball_predict_result(predict_features, m_args["red_sequence_len"], m_args["windows_size"])
         ball_name_list = ["{}_{}".format(name[mode], i) for name, i in red_name_list]
         pred_result_list = red_pred[0].tolist()

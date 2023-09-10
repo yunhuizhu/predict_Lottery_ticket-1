@@ -1,16 +1,10 @@
 import asyncio
 from pyppeteer import launch
-import os
 
 from bs4 import BeautifulSoup
-os.environ['PYPPETEER_DOWNLOAD_HOST'] = 'https://npm.taobao.org/mirrors'
 import site
 import os
-
-# 获取pyppeteer的安装路径
-pyppeteer_path = os.path.join(site.getsitepackages()[0], "pyppeteer")
-
-print(pyppeteer_path)
+os.environ['PYPPETEER_DOWNLOAD_HOST'] = 'https://npm.taobao.org/mirrors'
 async def main():
     browser = await launch()
     page = await browser.newPage()
