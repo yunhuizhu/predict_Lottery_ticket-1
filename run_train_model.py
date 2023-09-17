@@ -366,7 +366,7 @@ def action(name):
             train_red_ball_model(name, x_data=train_data["red"]["x_data"], y_data=train_data["red"]["y_data"])
             logger.info("训练耗时: {:.4f}".format(time.time() - start_time))
 
-        if name not in ["pls", "kl8", "qxc", "sd"] and model_args[name]["model_args"]["blue_epochs"] > 0:
+        if name not in ["pls", "kl8", "qxc"] and model_args[name]["model_args"]["blue_epochs"] > 0:
             tf.compat.v1.reset_default_graph()  # 重置网络图
 
             logger.info("开始训练【{}】蓝球模型...".format(name_path[name]["name"]))

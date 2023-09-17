@@ -174,11 +174,36 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 for j in range(2):
                     item[u"蓝球_{}".format(j+1)] = tr.find_all("td")[6+j].get_text().strip()
                 data.append(item)
-            elif name in ["pls", "sd", "qxc"]:
+            elif name == "sd":
+                if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
+                    if name in ["sd"] and flag == 1:
+                        item[u"期数"] = get_current_number(name)
+                        numlist = ['0', '7', '6']
+                        red_nums = len(numlist)
+                        for i in range(red_nums):
+                            item[u"红球_{}".format(i + 1)] = numlist[i]
+                        item[u"蓝球_{}".format(1)] = str(13)
+                        data.append(item)
+                        flag = 0
+                    continue
+                item[u"期数"] = tr.find_all("td")[0].get_text().strip()
+                numlist = tr.find_all("td")[1].get_text().strip().split(" ")
+                # if name == "qxc":
+                #     red_nums = 7
+                # elif name in ["pls", "sd"]:
+                #     red_nums = 3
+                red_nums = len(numlist)
+                addNum = 0
+                for i in range(red_nums):
+                    item[u"红球_{}".format(i + 1)] = numlist[i]
+                    addNum = addNum+int(numlist[i])
+                item[u"蓝球_{}".format(1)] = str(addNum)
+                data.append(item)
+            elif name in ["pls",  "qxc"]:
                 if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
                     if name in ["sd"] and flag ==1:
                         item[u"期数"] = get_current_number(name)
-                        numlist=['4','8','6']
+                        numlist=['0','7','6']
                         red_nums = len(numlist)
                         for i in range(red_nums):
                             item[u"红球_{}".format(i + 1)] = numlist[i]
@@ -235,7 +260,14 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 for k in range(2):
                     item[u"蓝球_{}".format(k+1)] = ori_data.iloc[i, 7+k]
                 data.append(item)
-            elif name in ["pls", "sd", "qxc"]:
+            elif name == "sd":
+                item[u"期数"] = ori_data.iloc[i, 1]
+                for j in range(3):
+                    item[u"红球_{}".format(j+1)] = ori_data.iloc[i, j+2]
+                for k in range(1):
+                    item[u"蓝球_{}".format(k+1)] = ori_data.iloc[i, 4+k]
+                data.append(item)
+            elif name in ["pls", "qxc"]:
                 # if name == "qxc":
                 #     red_nums = 7
                 # elif name in ["pls", "sd"]:
@@ -398,8 +430,33 @@ def run_predict(window_size):
 
         current_number = get_current_number(mini_args.name)
         logger.info("【{}】最近一期:{}".format(name_path[mini_args.name]["name"], current_number))
+    elif mini_args.name == "sd":
+        red_graph = tf.compat.v1.Graph()
+        with red_graph.as_default():
+            red_saver = tf.compat.v1.train.import_meta_graph(
+                "{}red_ball_model.ckpt.meta".format(redpath)
+            )
+        red_sess = tf.compat.v1.Session(graph=red_graph)
+        red_saver.restore(red_sess, "{}red_ball_model.ckpt".format(redpath))
+        logger.info("已加载红球模型！窗口大小:{}".format(model_args[mini_args.name]["model_args"]["windows_size"]))
 
-    elif mini_args.name in ["pls", "kl8", "qxc", "sd"]:
+        blue_graph = tf.compat.v1.Graph()
+        with blue_graph.as_default():
+            blue_saver = tf.compat.v1.train.import_meta_graph(
+                "{}blue_ball_model.ckpt.meta".format(bluepath)
+            )
+        blue_sess = tf.compat.v1.Session(graph=blue_graph)
+        blue_saver.restore(blue_sess, "{}blue_ball_model.ckpt".format(bluepath))
+        logger.info("已加载蓝球模型！窗口大小:{}".format(model_args[mini_args.name]["model_args"]["windows_size"]))
+
+        # 加载关键节点名
+        with open("{}/{}".format(model_path + model_args[mini_args.name]["pathname"]['name'] + str(model_args[mini_args.name]["model_args"]["windows_size"]), pred_key_name)) as f:
+            pred_key_d = json.load(f)
+
+        current_number = get_current_number(mini_args.name)
+        logger.info("【{}】最近一期:{}".format(name_path[mini_args.name]["name"], current_number))
+
+    elif mini_args.name in ["pls", "kl8", "qxc"]:
         red_graph = tf.compat.v1.Graph()
         with red_graph.as_default():
             red_saver = tf.compat.v1.train.import_meta_graph(
@@ -447,7 +504,7 @@ def get_red_ball_predict_result(predict_features, sequence_len, windows_size):
     """ 获取红球预测结果
     """
     name_list = [(ball_name[0], i + 1) for i in range(sequence_len)]
-    if mini_args.name not in ["pls", "qxc", "sd"]:
+    if mini_args.name not in ["pls", "qxc","sd"]:
         hotfixed = 1
     else:
         hotfixed = 0
@@ -504,7 +561,15 @@ def get_final_result(name, predict_features, mode=0):
         return {
             b_name: int(res) + 1 for b_name, res in zip(ball_name_list, pred_result_list)
         }
-    elif name in ["pls", "qxc", "sd"]:
+    elif name == "sd":
+        red_pred, red_name_list = get_red_ball_predict_result(predict_features, m_args["red_sequence_len"], m_args["windows_size"])
+        blue_pred, blue_name_list = get_blue_ball_predict_result(name, predict_features, m_args["blue_sequence_len"], m_args["windows_size"])
+        ball_name_list = ["{}_{}".format(name[mode], i) for name, i in red_name_list] + ["{}_{}".format(name[mode], i) for name, i in blue_name_list]
+        pred_result_list = red_pred[0].tolist() + blue_pred[0].tolist()
+        return {
+            b_name: int(res) + 1 for b_name, res in zip(ball_name_list, pred_result_list)
+        }
+    elif name in ["pls", "qxc"]:
         red_pred, red_name_list = get_red_ball_predict_result(predict_features, m_args["red_sequence_len"], m_args["windows_size"])
         ball_name_list = ["{}_{}".format(name[mode], i) for name, i in red_name_list]
         pred_result_list = red_pred[0].tolist()
