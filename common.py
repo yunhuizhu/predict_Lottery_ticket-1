@@ -24,7 +24,7 @@ def get_data_run(name, cq=0):
 
     current_number = 0
     if name =="gdfc36x7":
-        current_number= asyncio.run(get_current_number_gdfc36x7(name))
+        current_number= "2023350"
     else:
         current_number = get_current_number(name)
     logger.info("【{}】最新一期期号：{}".format(name_path[name]["name"], current_number))
@@ -34,7 +34,7 @@ def get_data_run(name, cq=0):
     if cq == 1 and name == "kl8":
         data = spider_cq(name, 1, current_number, "train")
     elif name =="gdfc36x7":
-        data = asyncio.run(spider_gdfc36x7(name, 1, current_number, "train"))
+        data = asyncio.get_event_loop().run_until_complete(spider_gdfc36x7(name, 1, current_number, "train"))
     else:
         data = spider(name, 1, current_number, "train")
     if "data" in os.listdir(os.getcwd()):
@@ -63,6 +63,9 @@ def get_current_number(name):
     """ 获取最新一期数字
     :return: int
     """
+    if name == "gdfc36x7":
+        current_number = asyncio.get_event_loop().run_until_complete(get_current_number_gdfc36x7(name))
+        return current_number
     url, _ = get_url(name)
     if name in ["qxc", "pls", "sd"]:
         r = requests.get("{}{}".format(url, "inc/history.php"), verify=False)
@@ -81,25 +84,26 @@ def get_current_number(name):
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
     return current_num
 async def get_current_number_gdfc36x7(name):
-    browser = await launch()
-    page = await browser.newPage()
-    await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
-
-    content = await page.content()
-    soup = BeautifulSoup(content, 'html.parser')
-
-    tbody = soup.find('tbody', {'id': 'body'})
-    trs = tbody.find_all('tr')
-    trs.reverse()
-    for tr in trs:
-        tds = tr.find_all('td', {'class': 'bc'})
-        if len(tds) == 2 and tds[0].text.isdigit():
-            current_num = tds[0].text.strip()
-            print(tds[0].text, tds[1].text.replace('|', ','))
-            break
-
-    await browser.close()
-    return current_num
+    return "2023350"
+    # browser = await launch(headless=True,options={'args': ['--no-sandbox']})
+    # page = await browser.newPage()
+    # await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
+    #
+    # content = await page.content()
+    # soup = BeautifulSoup(content, 'html.parser')
+    #
+    # tbody = soup.find('tbody', {'id': 'body'})
+    # trs = tbody.find_all('tr')
+    # trs.reverse()
+    # for tr in trs:
+    #     tds = tr.find_all('td', {'class': 'bc'})
+    #     if len(tds) == 2 and tds[0].text.isdigit():
+    #         current_num = tds[0].text.strip()
+    #         print(tds[0].text, tds[1].text.replace('|', ','))
+    #         break
+    #
+    # await browser.close()
+    # return current_num
 def spider_cq(name="kl8", start=1, end=999999, mode="train", windows_size=0):
     if name == "kl8" and mode == "train":
         url = "https://data.917500.cn/kl81000_cq_asc.txt"
@@ -134,6 +138,9 @@ def spider_cq(name="kl8", start=1, end=999999, mode="train", windows_size=0):
                 item[u"红球_{}".format(j+1)] = ori_data.iloc[i, j+2]
             data.append(item)
         return pd.DataFrame(data)
+    elif name == "gdfc36x7":
+        data = asyncio.get_event_loop().run_until_complete(spider_gdfc36x7(name, start, end, mode))
+        return data
     else:
         spider(name, start, end, mode)
 
@@ -145,6 +152,9 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
     :param mode 模式，train：训练模式，predict：预测模式（训练模式会保持文件）
     :return:
     """
+    if name == "gdfc36x7":
+        data = asyncio.get_event_loop().run_until_complete(spider_gdfc36x7(name, start, end, mode))
+        return data
     if mode == "train":
         url, path = get_url(name)
         # limit = int(end) - int(start) + 1
@@ -336,9 +346,14 @@ async def spider_gdfc36x7(name="gdfc36x7", start=1, end=999999, mode="train", wi
             item = dict()
             if (ori_data.iloc[i, 1] < int(start) or ori_data.iloc[i, 1] > int(end)) and windows_size == 0:
                 continue
+            # if name == "qxc":
+            #     red_nums = 7
+            # elif name in ["pls", "sd"]:
+            #     red_nums = 3
+            red_nums = len(ori_data.columns) - 2
             item[u"期数"] = ori_data.iloc[i, 1]
-            for j in range(7):
-                item[u"红球_{}".format(j + 1)] = ori_data.iloc[i, j + 2]
+            for j in range(red_nums):
+                item[u"红球_{}".format(j+1)] = ori_data.iloc[i, j+2]
             data.append(item)
         return pd.DataFrame(data)
 
@@ -504,7 +519,7 @@ def get_red_ball_predict_result(predict_features, sequence_len, windows_size):
     """ 获取红球预测结果
     """
     name_list = [(ball_name[0], i + 1) for i in range(sequence_len)]
-    if mini_args.name not in ["pls", "qxc","sd"]:
+    if mini_args.name not in ["pls", "qxc", "sd"]:
         hotfixed = 1
     else:
         hotfixed = 0
@@ -584,7 +599,8 @@ def get_final_result(name, predict_features, mode=0):
             b_name: int(res) + 1 for b_name, res in zip(ball_name_list, pred_result_list)
         }
     elif name == "gdfc36x7":
-        red_pred, red_name_list = get_red_ball_predict_result(predict_features, m_args["red_sequence_len"], m_args["windows_size"])
+        red_pred, red_name_list = get_red_ball_predict_result(predict_features, m_args["red_sequence_len"],
+                                                              m_args["windows_size"])
         ball_name_list = ["{}_{}".format(name[mode], i) for name, i in red_name_list]
         pred_result_list = red_pred[0].tolist()
         return {
