@@ -84,26 +84,25 @@ def get_current_number(name):
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
     return current_num
 async def get_current_number_gdfc36x7(name):
-    return "2023350"
-    # browser = await launch(headless=True,options={'args': ['--no-sandbox']})
-    # page = await browser.newPage()
-    # await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
-    #
-    # content = await page.content()
-    # soup = BeautifulSoup(content, 'html.parser')
-    #
-    # tbody = soup.find('tbody', {'id': 'body'})
-    # trs = tbody.find_all('tr')
-    # trs.reverse()
-    # for tr in trs:
-    #     tds = tr.find_all('td', {'class': 'bc'})
-    #     if len(tds) == 2 and tds[0].text.isdigit():
-    #         current_num = tds[0].text.strip()
-    #         print(tds[0].text, tds[1].text.replace('|', ','))
-    #         break
-    #
-    # await browser.close()
-    # return current_num
+    browser = await launch(headless=True,options={'args': ['--no-sandbox']})
+    page = await browser.newPage()
+    await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
+
+    content = await page.content()
+    soup = BeautifulSoup(content, 'html.parser')
+
+    tbody = soup.find('tbody', {'id': 'body'})
+    trs = tbody.find_all('tr')
+    trs.reverse()
+    for tr in trs:
+        tds = tr.find_all('td', {'class': 'bc'})
+        if len(tds) == 2 and tds[0].text.isdigit():
+            current_num = tds[0].text.strip()
+            print(tds[0].text, tds[1].text.replace('|', ','))
+            break
+
+    await browser.close()
+    return current_num
 def spider_cq(name="kl8", start=1, end=999999, mode="train", windows_size=0):
     if name == "kl8" and mode == "train":
         url = "https://data.917500.cn/kl81000_cq_asc.txt"
@@ -487,6 +486,24 @@ def run_predict(window_size):
 
         current_number = get_current_number(mini_args.name)
         logger.info("【{}】最近一期:{}".format(name_path[mini_args.name]["name"], current_number))
+    elif mini_args.name == "gdfc36x7":
+        red_graph = tf.compat.v1.Graph()
+        with red_graph.as_default():
+            red_saver = tf.compat.v1.train.import_meta_graph(
+                "{}red_ball_model.ckpt.meta".format(redpath)
+            )
+        red_sess = tf.compat.v1.Session(graph=red_graph)
+        red_saver.restore(red_sess, "{}red_ball_model.ckpt".format(redpath))
+        logger.info("已加载红球模型！窗口大小:{}".format(model_args[mini_args.name]["model_args"]["windows_size"]))
+
+        # 加载关键节点名
+        with open("{}/{}".format(model_path + model_args[mini_args.name]["pathname"]['name'] + str(
+                model_args[mini_args.name]["model_args"]["windows_size"]), pred_key_name)) as f:
+            pred_key_d = json.load(f)
+
+        current_number = get_current_number(mini_args.name)
+        logger.info("【{}】最近一期:{}".format(name_path[mini_args.name]["name"], current_number))
+
 
 def get_year():
     """ 截取年份
