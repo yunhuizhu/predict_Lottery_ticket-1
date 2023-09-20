@@ -305,7 +305,7 @@ async def spider_gdfc36x7(name="gdfc36x7", start=1, end=999999, mode="train", wi
     :return:
     """
     if mode == "train":
-        browser = await launch()
+        browser = await launch(headless=True,options={'args': ['--no-sandbox']})
         page = await browser.newPage()
         await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
 
