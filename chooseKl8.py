@@ -1,32 +1,32 @@
 from collections import Counter
 # 假设你的数字组如下：
-ck3 = [1,3,11,15,16,23,24,30,35,45,47,51,52,53,61,62,63,65,66,76]  # 请用实际数字替换
-ck4 = [3,6,10,13,14,21,29,39,40,46,48,53,54,58,59,60,61,64,65,70]  # 请用实际数字替换
-ck5 = [6,10,17,19,20,21,30,36,39,41,45,50,55,58,60,65,66,69,70,72]  # 请用实际数字替换
-ck7 = [1,3,7,8,13,18,19,23,26,33,36,37,41,48,50,59,61,71,77,80]  # 请用实际数字替换
-ck9 = [6,8,11,25,27,31,34,39,40,42,44,45,47,54,56,63,64,77,78,80]  # 请用实际数字替换
-ck10 = [2,5,16,24,28,30,37,38,44,45,46,49,62,63,65,67,68,72,74,77]  # 请用实际数字替换
-ck11 = [5,9,11,12,13,15,22,23,32,45,55,57,59,63,64,65,68,70,74,77]  # 请用实际数字替换
-ck12 = [19,24,26,31,32,39,45,46,49,52,54,62,63,64,65,69,71,73,75,79]  # 请用实际数字替换
-ck13 = [1,6,9,14,18,23,27,28,29,34,41,48,53,62,64,66,73,74,78,79]  # 请用实际数字替换
-ck14 = [3,5,7,11,15,21,24,25,29,39,40,41,42,48,53,59,61,62,63,67]  # 请用实际数字替换
-ck15 = [1,4,10,12,22,25,44,46,49,51,52,55,56,64,68,69,72,74,75,76]  # 请用实际数字替换
-ck20 = [6,14,18,22,30,31,36,37,40,41,43,44,49,50,51,69,70,75,79,80]  # 请用实际数字替换
-yl_fqn_1= [13, 19, 61, 38, 60, 2, 27, 33]
-yl_fqn_2= [47, 56, 6, 39, 46, 53, 77, 5]
-yl_fqn_3= [11, 15, 57, 31, 40, 44, 55, 58]
-yl_fqn_4= [59, 75, 16, 25, 28, 50, 63, 74]
-yl_fqn_5= [7, 10, 12, 17, 21, 32, 34, 45]
-yl_fqn_6= [62, 64, 70, 80, 3, 4, 8, 23]
-yl_fqn_7= [24, 26, 29, 37, 42, 48, 54, 67]
-yl_fqn_8= [71, 72, 76, 78, 1, 9, 14, 18]
-yl_fqn_9= [20, 22, 30, 35, 36, 41, 43, 49]
-yl_fqn_10= [51, 52, 65, 66, 68, 69, 73, 79]
-lh=[2,10,13,17,19,31,40,44,53,64,67]
-re = [7,10,17,57,58,62,64,67]  # 请用实际数字替换
-wen = [5,16,25,26,27,31,32,40,44,53,59,75,76,77]  # 请用实际数字替换
-leng = [2,12,13,19,33,38,46,56,60,61]  # 请用实际数字替换
-cj = [1,9,14,18,20,22,30,35,36,41,43,49,51,52,65,66,68,69,73,79]  # 请用实际数字替换
+ck3 = [2,4,5,8,10,12,14,18,29,32,35,36,48,54,55,66,67,72,74,79]  # 请用实际数字替换
+ck4 = [8,10,11,12,14,17,27,40,44,45,47,51,52,54,59,66,67,73,77,79]  # 请用实际数字替换
+ck5 = [10,16,17,23,24,28,37,42,44,46,49,50,51,53,56,60,64,70,71,73]  # 请用实际数字替换
+ck7 = [17,18,20,22,25,29,30,32,36,38,41,43,48,50,51,54,56,57,62,78]  # 请用实际数字替换
+ck9 = [10,14,15,20,23,27,34,37,38,39,42,54,57,59,60,65,67,71,72,75]  # 请用实际数字替换
+ck10 = [4,9,11,12,15,25,29,32,50,56,57,58,59,62,66,68,70,74,76,80]  # 请用实际数字替换
+ck11 = [1,6,7,8,12,21,35,36,38,45,55,57,58,63,64,67,72,74,78,80]  # 请用实际数字替换
+ck12 = [1,7,9,12,23,31,33,35,38,47,49,53,56,57,66,70,73,74,75,80]  # 请用实际数字替换
+ck13 = [6,11,13,17,18,21,30,35,38,41,44,49,52,56,62,67,68,71,76,79]  # 请用实际数字替换
+ck14 = [5,7,11,12,14,20,25,40,43,49,51,54,55,59,61,65,66,73,76,77]  # 请用实际数字替换
+ck15 = [3,5,15,16,17,22,24,34,35,36,41,42,48,54,66,71,72,74,75,76]  # 请用实际数字替换
+ck20 = [17,18,26,27,31,41,42,43,48,50,51,53,56,57,58,59,63,64,70,79]  # 请用实际数字替换
+yl_fqn_1= [13, 19, 61, 33, 47, 56, 6, 46]
+yl_fqn_2= [53, 77, 5, 11, 57, 31, 40, 44]
+yl_fqn_3= [58, 75, 25, 28, 63, 74, 7, 10]
+yl_fqn_4= [17, 21, 45, 62, 80, 3, 4, 8]
+yl_fqn_5= [23, 24, 26, 29, 37, 42, 48, 67]
+yl_fqn_6= [71, 76, 78, 1, 9, 14, 18, 20]
+yl_fqn_7= [22, 36, 43, 49, 51, 52, 65, 66]
+yl_fqn_8= [68, 69, 73, 79, 2, 12, 15, 16]
+yl_fqn_9= [27, 30, 32, 34, 35, 38, 39, 41]
+yl_fqn_10= [50, 54, 55, 59, 60, 64, 70, 72]
+lh=[13,17,26,31,33,40,53,56,58,61,69]
+re = [7,24,57,58]  # 请用实际数字替换
+wen = [8,10,17,18,20,25,26,31,40,43,44,45,53,62,67,69,75,76,77,80]  # 请用实际数字替换
+leng = [5,13,19,33,46,56,61,74]  # 请用实际数字替换
+cj = [2,12,15,16,27,30,32,34,35,38,39,41,50,54,55,59,60,64,70,72]  # 请用实际数字替换
 ckMap = {'3':ck3,'4':ck4,'5':ck5,'7':ck7,'9':ck9,'10':ck10,'11':ck11,'12':ck12,'13':ck13,'14':ck14,'15':ck15,'20':ck20}
 ylMap={'1':yl_fqn_1,'2':yl_fqn_2,'3':yl_fqn_3,'4':yl_fqn_4,'5':yl_fqn_5,'6':yl_fqn_6,'7':yl_fqn_7,'8':yl_fqn_8,'9':yl_fqn_9,'10':yl_fqn_10}
 
@@ -68,61 +68,78 @@ ckcommons[0]=noNum
 for count, numbers in ckcommons.items():
     if numbers:
      print(f"ckcommon{count}: {numbers}")
+    ckcommons_subtract = set(numbers);
     temp = set(numbers) & set(lh)
+    ckcommons_subtract = ckcommons_subtract-temp
     if temp:
      print(f"lh_ckcommon{count}:",temp)
      for ylMapkey, ylMapValue in ylMap.items():
          temp2 = set(temp) & set(ylMapValue)
          if temp2:
-             print(f"lh_ckcommon_yl{ylMapkey}:", temp2)
+             print(f"lh_ckcommon{count}_yl{ylMapkey}:", temp2)
              for ckmapKey, ckmapValue in ckMap.items():
                  temp3 = set(temp2) & set(ckmapValue)
                  if temp3:
-                     print(f"lh_ckcommon_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+                     print(f"lh_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
     temp = set(numbers) & set(re)
+    ckcommons_subtract = ckcommons_subtract-temp
     if temp:
      print(f"re_ckcommons {count}:",temp)
      for ylMapkey, ylMapValue in ylMap.items():
          temp2 = set(temp) & set(ylMapValue)
          if temp2:
-             print(f"re_ckcommon_yl{ylMapkey}:", temp2)
+             print(f"re_ckcommon{count}_yl{ylMapkey}:", temp2)
              for ckmapKey, ckmapValue in ckMap.items():
                  temp3 = set(temp2) & set(ckmapValue)
                  if temp3:
-                     print(f"re_ckcommon_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+                     print(f"re_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
     temp = set(numbers) & set(wen)
+    ckcommons_subtract = ckcommons_subtract-temp
     if temp:
      print(f"wen_ckcommons {count}:",temp)
      for ylMapkey, ylMapValue in ylMap.items():
          temp2 = set(temp) & set(ylMapValue)
          if temp2:
-             print(f"wen_ckcommon_yl{ylMapkey}:", temp2)
+             print(f"wen_ckcommon{count}_yl{ylMapkey}:", temp2)
              for ckmapKey, ckmapValue in ckMap.items():
                  temp3 = set(temp2) & set(ckmapValue)
                  if temp3:
-                     print(f"wen_ckcommon_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+                     print(f"wen_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
     temp = set(numbers) & set(leng)
+    ckcommons_subtract = ckcommons_subtract-temp
     if temp:
      print(f"leng_ckcommons {count}:",temp)
      for ylMapkey, ylMapValue in ylMap.items():
          temp2 = set(temp) & set(ylMapValue)
          if temp2:
-             print(f"leng_ckcommon_yl{ylMapkey}:", temp2)
+             print(f"leng_ckcommon{count}_yl{ylMapkey}:", temp2)
              for ckmapKey, ckmapValue in ckMap.items():
                  temp3 = set(temp2) & set(ckmapValue)
                  if temp3:
-                     print(f"leng_ckcommon_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+                     print(f"leng_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
     temp = set(numbers) & set(cj)
+    ckcommons_subtract = ckcommons_subtract-temp
     if temp:
      print(f"precj_ckcommons {count}:",temp)
      for ylMapkey, ylMapValue in ylMap.items():
          temp2 = set(temp) & set(ylMapValue)
          if temp2:
-             print(f"precj_ckcommon_yl{ylMapkey}:", temp2)
+             print(f"precj_ckcommon{count}_yl{ylMapkey}:", temp2)
              for ckmapKey, ckmapValue in ckMap.items():
                  temp3 = set(temp2) & set(ckmapValue)
                  if temp3:
-                     print(f"precj_ckcommon_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+                     print(f"precj_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+    # print(f"ckcommon{count}_subtract:", ckcommons_subtract)
+    if ckcommons_subtract:
+     print(f"subtract_ckcommons {count}:",ckcommons_subtract)
+     for ylMapkey, ylMapValue in ylMap.items():
+         temp2 = set(ckcommons_subtract) & set(ylMapValue)
+         if temp2:
+             print(f"subtract_ckcommon{count}_yl{ylMapkey}:", temp2)
+             for ckmapKey, ckmapValue in ckMap.items():
+                 temp3 = set(temp2) & set(ckmapValue)
+                 if temp3:
+                     print(f"subtract_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
 
 
 ck_re_map={}
