@@ -22,19 +22,32 @@ yl_fqn_7= [24, 26, 29, 37, 42, 48, 54, 67]
 yl_fqn_8= [71, 72, 76, 78, 1, 9, 14, 18]
 yl_fqn_9= [20, 22, 30, 35, 36, 41, 43, 49]
 yl_fqn_10= [51, 52, 65, 66, 68, 69, 73, 79]
-lh=[2,10,13,17,19,31,40,44,53,64,67]
-re = [7,10,17,57,58,62,64,67]  # 请用实际数字替换
-wen = [5,16,25,26,27,31,32,40,44,53,59,75,76,77]  # 请用实际数字替换
-leng = [2,12,13,19,33,38,46,56,60,61]  # 请用实际数字替换
+# lh=[2,10,13,17,19,31,40,44,53,64,67]
+# re = [7,10,17,57,58,62,64,67]  # 请用实际数字替换
+# wen = [5,16,25,26,27,31,32,40,44,53,59,75,76,77]  # 请用实际数字替换
+# leng = [2,12,13,19,33,38,46,56,60,61]  # 请用实际数字替换
 cj = [2,12,15,16,27,30,32,34,35,38,39,41,50,54,55,59,60,64,70,72]  # 请用实际数字替换
-prev_cj = [1,9,14,18,20,22,30,35,36,41,43,49,51,52,65,66,68,69,73,79]  # 请用实际数字替换
+# prev_cj = [1,9,14,18,20,22,30,35,36,41,43,49,51,52,65,66,68,69,73,79]  # 请用实际数字替换
 ckMap = {'3':ck3,'4':ck4,'5':ck5,'7':ck7,'9':ck9,'10':ck10,'11':ck11,'12':ck12,'13':ck13,'14':ck14,'15':ck15,'20':ck20}
 ylMap={'1':yl_fqn_1,'2':yl_fqn_2,'3':yl_fqn_3,'4':yl_fqn_4,'5':yl_fqn_5,'6':yl_fqn_6,'7':yl_fqn_7,'8':yl_fqn_8,'9':yl_fqn_9,'10':yl_fqn_10}
 
-groups = []
+# groups = []
 for count, numbers in ckMap.items():
     print("ck"+count, numbers)
-    groups+= numbers
+    temp = set(numbers) & set(cj)
+    if temp:
+        # print(f"cj_ck{count}:", temp)
+        for ylMapkey, ylMapValue in ylMap.items():
+            temp2 = set(temp) & set(ylMapValue)
+            if temp2:
+                print(f"cj_ck{count}_yl{ylMapkey}:", temp2)
+    temp = set(numbers)
+    if temp:
+        for ylMapkey, ylMapValue in ylMap.items():
+            temp2 = set(temp) & set(ylMapValue)
+            # if temp2:
+                # print(f"ck{count}_yl{ylMapkey}:", temp2)
+    # groups+= temp
 # print("ck3 ", ck3)
 # print("ck4 ", ck4)
 # print("ck5 ", ck5)
@@ -48,111 +61,111 @@ for count, numbers in ckMap.items():
 # print("ck15 ", ck15)
 # print("ck20 ", ck20)
 # 统计数字出现的次数
-counter = Counter(groups)
-# 创建一个空字典来存储出现次数相同的数字
-ckcommons = {}
-for number, count in counter.items():
-    if count not in ckcommons:
-        ckcommons[count] = [number]
-    else:
-        ckcommons[count].append(number)
-all_numbers = set(range(81)) # 创建一个包含0到80的集合
-# numbers_in_groups = set(ck3 + ck4 + ck5 + ck7+ck9+ck10+ck11+ck12+ck13+ck14+ck15+ck20) # 创建一个包含四组所有数字的集合
-numbers_in_groups =[] # 创建一个包含四组所有数字的集合
-for count, numbers in ckMap.items():
-    numbers_in_groups = numbers_in_groups+numbers
-noNum = all_numbers - set(numbers_in_groups)
-print("noNum ", noNum)
-ckMap['noNum']=noNum
-ckcommons[0]=noNum
-# 打印出现次数相同的数字
-for count, numbers in ckcommons.items():
-    if numbers:
-     print(f"ckcommon{count}: {numbers}")
-
-    ckcommons_subtract = set(numbers);
-    temp = set(numbers) & set(lh) &set(cj)
-    ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(lh))
-    if temp:
-     print(f"cj_lh_ckcommon{count}:",temp)
-     for ylMapkey, ylMapValue in ylMap.items():
-         temp2 = set(temp) & set(ylMapValue)
-         if temp2:
-             print(f"cj_lh_ckcommon{count}_yl{ylMapkey}:", temp2)
-             for ckmapKey, ckmapValue in ckMap.items():
-                 temp3 = set(temp2) & set(ckmapValue)
-                 if temp3:
-                     print(f"cj_lh_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
-    temp = set(numbers) & set(re) &set(cj)
-    ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(re))
-    if temp:
-     print(f"cj_re_ckcommons {count}:",temp)
-     for ylMapkey, ylMapValue in ylMap.items():
-         temp2 = set(temp) & set(ylMapValue)
-         if temp2:
-             print(f"cj_re_ckcommon{count}_yl{ylMapkey}:", temp2)
-             for ckmapKey, ckmapValue in ckMap.items():
-                 temp3 = set(temp2) & set(ckmapValue)
-                 if temp3:
-                     print(f"cj_re_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
-    temp = set(numbers) & set(wen) &set(cj)
-    ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(wen))
-    if temp:
-     print(f"cj_wen_ckcommons {count}:",temp)
-     for ylMapkey, ylMapValue in ylMap.items():
-         temp2 = set(temp) & set(ylMapValue)
-         if temp2:
-             print(f"cj_wen_ckcommon{count}_yl{ylMapkey}:", temp2)
-             for ckmapKey, ckmapValue in ckMap.items():
-                 temp3 = set(temp2) & set(ckmapValue)
-                 if temp3:
-                     print(f"cj_wen_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
-    temp = set(numbers) & set(leng) &set(cj)
-    ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(leng))
-    if temp:
-     print(f"cj_leng_ckcommons {count}:",temp)
-     for ylMapkey, ylMapValue in ylMap.items():
-         temp2 = set(temp) & set(ylMapValue)
-         if temp2:
-             print(f"cj_leng_ckcommon{count}_yl{ylMapkey}:", temp2)
-             for ckmapKey, ckmapValue in ckMap.items():
-                 temp3 = set(temp2) & set(ckmapValue)
-                 if temp3:
-                     print(f"cj_leng_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
-    temp = set(numbers) & set(prev_cj) & set(cj)
-    ckcommons_subtract = (ckcommons_subtract - (set(numbers) & set(prev_cj)))
-    print(f"subtract_ckcommons {count}:",ckcommons_subtract)
-    ckcommons_subtract = ckcommons_subtract& set(cj)
-    if temp:
-     print(f"cj_precj_ckcommons {count}:",temp)
-     for ylMapkey, ylMapValue in ylMap.items():
-         temp2 = set(temp) & set(ylMapValue)
-         if temp2:
-             print(f"cj_precj_ckcommon{count}_yl{ylMapkey}:", temp2)
-             for ckmapKey, ckmapValue in ckMap.items():
-                 temp3 = set(temp2) & set(ckmapValue)
-                 if temp3:
-                     print(f"cj_precj_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
-    if ckcommons_subtract:
-     print(f"cj_subtract_ckcommons {count}:",ckcommons_subtract)
-     for ylMapkey, ylMapValue in ylMap.items():
-         temp2 = set(ckcommons_subtract) & set(ylMapValue)
-         if temp2:
-             print(f"cj_subtract_ckcommon{count}_yl{ylMapkey}:", temp2)
-             for ckmapKey, ckmapValue in ckMap.items():
-                 temp3 = set(temp2) & set(ckmapValue)
-                 if temp3:
-                     print(f"cj_subtract_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
-
-
-ck_re_map={}
-groups =[]
-# print("re", re)
-for key, value in ckMap.items():
-    tempName = 'ck'+str(key) + '_re'
-    tempSet = set(value)&set(re)
-    ck_re_map[tempName]=tempSet
-    groups=groups+list(tempSet)
+# counter = Counter(groups)
+# # 创建一个空字典来存储出现次数相同的数字
+# ckcommons = {}
+# for number, count in counter.items():
+#     if count not in ckcommons:
+#         ckcommons[count] = [number]
+#     else:
+#         ckcommons[count].append(number)
+# all_numbers = set(range(81)) # 创建一个包含0到80的集合
+# # numbers_in_groups = set(ck3 + ck4 + ck5 + ck7+ck9+ck10+ck11+ck12+ck13+ck14+ck15+ck20) # 创建一个包含四组所有数字的集合
+# numbers_in_groups =[] # 创建一个包含四组所有数字的集合
+# for count, numbers in ckMap.items():
+#     numbers_in_groups = numbers_in_groups+numbers
+# noNum = all_numbers - set(numbers_in_groups)
+# print("noNum ", noNum)
+# ckMap['noNum']=noNum
+# ckcommons[0]=noNum
+# # 打印出现次数相同的数字
+# for count, numbers in ckcommons.items():
+#     if numbers:
+#      print(f"ckcommon{count}: {numbers}")
+#
+#     ckcommons_subtract = set(numbers);
+#     temp = set(numbers) & set(lh) &set(cj)
+#     ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(lh))
+#     if temp:
+#      print(f"cj_lh_ckcommon{count}:",temp)
+#      for ylMapkey, ylMapValue in ylMap.items():
+#          temp2 = set(temp) & set(ylMapValue)
+#          if temp2:
+#              print(f"cj_lh_ckcommon{count}_yl{ylMapkey}:", temp2)
+#              for ckmapKey, ckmapValue in ckMap.items():
+#                  temp3 = set(temp2) & set(ckmapValue)
+#                  if temp3:
+#                      print(f"cj_lh_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+#     temp = set(numbers) & set(re) &set(cj)
+#     ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(re))
+#     if temp:
+#      print(f"cj_re_ckcommons {count}:",temp)
+#      for ylMapkey, ylMapValue in ylMap.items():
+#          temp2 = set(temp) & set(ylMapValue)
+#          if temp2:
+#              print(f"cj_re_ckcommon{count}_yl{ylMapkey}:", temp2)
+#              for ckmapKey, ckmapValue in ckMap.items():
+#                  temp3 = set(temp2) & set(ckmapValue)
+#                  if temp3:
+#                      print(f"cj_re_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+#     temp = set(numbers) & set(wen) &set(cj)
+#     ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(wen))
+#     if temp:
+#      print(f"cj_wen_ckcommons {count}:",temp)
+#      for ylMapkey, ylMapValue in ylMap.items():
+#          temp2 = set(temp) & set(ylMapValue)
+#          if temp2:
+#              print(f"cj_wen_ckcommon{count}_yl{ylMapkey}:", temp2)
+#              for ckmapKey, ckmapValue in ckMap.items():
+#                  temp3 = set(temp2) & set(ckmapValue)
+#                  if temp3:
+#                      print(f"cj_wen_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+#     temp = set(numbers) & set(leng) &set(cj)
+#     ckcommons_subtract = ckcommons_subtract - (set(numbers) & set(leng))
+#     if temp:
+#      print(f"cj_leng_ckcommons {count}:",temp)
+#      for ylMapkey, ylMapValue in ylMap.items():
+#          temp2 = set(temp) & set(ylMapValue)
+#          if temp2:
+#              print(f"cj_leng_ckcommon{count}_yl{ylMapkey}:", temp2)
+#              for ckmapKey, ckmapValue in ckMap.items():
+#                  temp3 = set(temp2) & set(ckmapValue)
+#                  if temp3:
+#                      print(f"cj_leng_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+#     temp = set(numbers) & set(prev_cj) & set(cj)
+#     ckcommons_subtract = (ckcommons_subtract - (set(numbers) & set(prev_cj)))
+#     print(f"subtract_ckcommons {count}:",ckcommons_subtract)
+#     ckcommons_subtract = ckcommons_subtract& set(cj)
+#     if temp:
+#      print(f"cj_precj_ckcommons {count}:",temp)
+#      for ylMapkey, ylMapValue in ylMap.items():
+#          temp2 = set(temp) & set(ylMapValue)
+#          if temp2:
+#              print(f"cj_precj_ckcommon{count}_yl{ylMapkey}:", temp2)
+#              for ckmapKey, ckmapValue in ckMap.items():
+#                  temp3 = set(temp2) & set(ckmapValue)
+#                  if temp3:
+#                      print(f"cj_precj_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+#     if ckcommons_subtract:
+#      print(f"cj_subtract_ckcommons {count}:",ckcommons_subtract)
+#      for ylMapkey, ylMapValue in ylMap.items():
+#          temp2 = set(ckcommons_subtract) & set(ylMapValue)
+#          if temp2:
+#              print(f"cj_subtract_ckcommon{count}_yl{ylMapkey}:", temp2)
+#              for ckmapKey, ckmapValue in ckMap.items():
+#                  temp3 = set(temp2) & set(ckmapValue)
+#                  if temp3:
+#                      print(f"cj_subtract_ckcommon{count}_yl{ylMapkey}_ck_{ckmapKey}:", temp3)
+#
+#
+# ck_re_map={}
+# groups =[]
+# # print("re", re)
+# for key, value in ckMap.items():
+#     tempName = 'ck'+str(key) + '_re'
+#     tempSet = set(value)&set(re)
+#     ck_re_map[tempName]=tempSet
+#     groups=groups+list(tempSet)
     # print(f"{tempName}:",tempSet)
 # ck3_re=set(ck3) & set(re)
 # ck4_re=set(ck4) & set(re)
@@ -184,25 +197,25 @@ for key, value in ckMap.items():
 # print("noNum_re",noNum_re)
 # groups = [ ck3_re,  ck4_re,ck5_re, ck7_re, ck9_re, ck10_re,  ck11_re, ck12_re, ck13_re, ck14_re, ck15_re,ck20_re,noNum_re]
 # 统计数字出现的次数
-counter = Counter(groups)
-# 创建一个空字典来存储出现次数相同的数字
-ck_recommons = {}
-for number, count in counter.items():
-    if count not in ck_recommons:
-        ck_recommons[count] = [number]
-    else:
-        ck_recommons[count].append(number)
+# counter = Counter(groups)
+# # 创建一个空字典来存储出现次数相同的数字
+# ck_recommons = {}
+# for number, count in counter.items():
+#     if count not in ck_recommons:
+#         ck_recommons[count] = [number]
+#     else:
+#         ck_recommons[count].append(number)
 # 打印出现次数相同的数字
 # for count, numbers in ck_recommons.items():
 #      print(f"ck_recommon{count}: {numbers}")
-ck_wen_map={}
-groups =[]
-# print("wen", wen)
-for key, value in ckMap.items():
-    tempName = 'ck'+str(key) + '_wen'
-    tempSet = set(value)&set(wen)
-    ck_wen_map[tempName]=tempSet
-    groups=groups+list(tempSet)
+# ck_wen_map={}
+# groups =[]
+# # print("wen", wen)
+# for key, value in ckMap.items():
+#     tempName = 'ck'+str(key) + '_wen'
+#     tempSet = set(value)&set(wen)
+#     ck_wen_map[tempName]=tempSet
+#     groups=groups+list(tempSet)
     # print(f"{tempName}:",tempSet)
 # ck3_wen=set(ck3) & set(wen)
 # ck4_wen=set(ck4) & set(wen)
@@ -224,26 +237,26 @@ for key, value in ckMap.items():
 # print("ck20_wen",ck20_wen)
 # groups = [ ck3_wen,  ck4_wen,ck5_wen, ck7_wen, ck9_wen, ck10_wen, ck20_wen,noNum_wen]
 # 统计数字出现的次数
-counter = Counter(groups)
-# 创建一个空字典来存储出现次数相同的数字
-ck_wencommons = {}
-for number, count in counter.items():
-    if count not in ck_wencommons:
-        ck_wencommons[count] = [number]
-    else:
-        ck_wencommons[count].append(number)
-# 打印出现次数相同的数字
-# for count, numbers in ck_wencommons.items():
-    # print(f"ck_wencommon{count}: {numbers}")
-
-ck_leng_map={}
-groups =[]
-# print("leng",leng)
-for key, value in ckMap.items():
-    tempName = 'ck'+str(key) + '_leng'
-    tempSet = set(value)&set(leng)
-    ck_leng_map[tempName]=tempSet
-    groups=groups+list(tempSet)
+# counter = Counter(groups)
+# # 创建一个空字典来存储出现次数相同的数字
+# ck_wencommons = {}
+# for number, count in counter.items():
+#     if count not in ck_wencommons:
+#         ck_wencommons[count] = [number]
+#     else:
+#         ck_wencommons[count].append(number)
+# # 打印出现次数相同的数字
+# # for count, numbers in ck_wencommons.items():
+#     # print(f"ck_wencommon{count}: {numbers}")
+#
+# ck_leng_map={}
+# groups =[]
+# # print("leng",leng)
+# for key, value in ckMap.items():
+#     tempName = 'ck'+str(key) + '_leng'
+#     tempSet = set(value)&set(leng)
+#     ck_leng_map[tempName]=tempSet
+#     groups=groups+list(tempSet)
     # print(f"{tempName}:",tempSet)
 # ck3_leng=set(ck3) & set(leng)
 # ck4_leng=set(ck4) & set(leng)
@@ -264,14 +277,14 @@ for key, value in ckMap.items():
 # print("noNum_leng",noNum_leng)
 # groups = [ ck3_leng,  ck4_leng,ck5_leng, ck7_leng, ck9_leng, ck10_leng, ck20_leng,noNum_leng]
 # 统计数字出现的次数
-counter = Counter(groups)
-# 创建一个空字典来存储出现次数相同的数字
-ck_lengcommons = {}
-for number, count in counter.items():
-    if count not in ck_lengcommons:
-        ck_lengcommons[count] = [number]
-    else:
-        ck_lengcommons[count].append(number)
+# counter = Counter(groups)
+# # 创建一个空字典来存储出现次数相同的数字
+# ck_lengcommons = {}
+# for number, count in counter.items():
+#     if count not in ck_lengcommons:
+#         ck_lengcommons[count] = [number]
+#     else:
+#         ck_lengcommons[count].append(number)
 # 打印出现次数相同的数字
 # for count, numbers in ck_lengcommons.items():
     # print(f"ck_lengcommon{count}: {numbers}")
@@ -301,18 +314,18 @@ for number, count in counter.items():
 # for count, numbers in ck_wencommons.items():
 #     temp = set(numbers) & set(cj)
 #     print(f"cj_ckwencommons {count}:",temp)
-for count, numbers in ckMap.items():
-    temp = set(numbers) & set(cj)
-    print(f"cj_ck{count}:",temp)
-for count, numbers in ckcommons.items():
-    temp = set(numbers) & set(cj)
-    print(f"cj_ckcommoncommons {count}:",temp)
-cj_wen = set(cj) & set(wen)
-cj_re = set(cj) & set(re)
-cj_leng = set(cj) & set(leng)
-print("cj_wen",cj_wen)
-print("cj_re",cj_re)
-print("cj_leng",cj_leng)
+# for count, numbers in ckMap.items():
+#     temp = set(numbers) & set(cj)
+#     print(f"cj_ck{count}:",temp)
+# for count, numbers in ckcommons.items():
+#     temp = set(numbers) & set(cj)
+#     print(f"cj_ckcommoncommons {count}:",temp)
+# cj_wen = set(cj) & set(wen)
+# cj_re = set(cj) & set(re)
+# cj_leng = set(cj) & set(leng)
+# print("cj_wen",cj_wen)
+# print("cj_re",cj_re)
+# print("cj_leng",cj_leng)
 # cj_ck_re_map={}
 # for count, numbers in ck_re_map.items():
 #     tempName = 'cj_' +count
@@ -381,4 +394,3 @@ print("cj_leng",cj_leng)
 # print("cj_ck10_leng",cj_ck10_leng)
 # print("cj_ck20_leng",cj_ck20_leng)
 # print("cj_noNum_leng",cj_noNum_leng)
-

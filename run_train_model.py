@@ -213,16 +213,17 @@ def train_blue_ball_model(name, x_data, y_data):
     """
     global last_save_time
     m_args = model_args[name]
-    x_data = x_data - 1
-    y_data = y_data - 1
+    # if name  in [ "sd"]:
+    #     x_data = x_data - 1
+    #     y_data = y_data - 1
     data_len = x_data.shape[0]
-    if name == "ssq":
+    if name in ["ssq","sd"]:
         x_data = x_data.reshape(len(x_data), m_args["model_args"]["windows_size"])
         y_data = tf.keras.utils.to_categorical(y_data, num_classes=m_args["model_args"]["blue_n_class"])
     logger.info("特征数据维度: {}".format(x_data.shape))
     logger.info("标签数据维度: {}".format(y_data.shape))
     with tf.compat.v1.Session() as sess:
-        if name == "ssq":
+        if name in ["ssq","sd"]:
             blue_ball_model = SignalLstmModel(
                 batch_size=m_args["model_args"]["batch_size"],
                 n_class=m_args["model_args"]["blue_n_class"],
@@ -291,7 +292,7 @@ def train_blue_ball_model(name, x_data, y_data):
                 #     y = np.append(y, [y_data[random_index]], axis=0)
                 #     diff -= 1
                 index += 1
-                if name == "ssq":
+                if name in ["ssq","sd"]:
                     _, loss_, pred = sess.run([
                         train_step, blue_ball_model.loss, blue_ball_model.pred_label
                     ], feed_dict={
@@ -339,7 +340,7 @@ def train_blue_ball_model(name, x_data, y_data):
                     perindex = 0
                     totalloss = 0.0
                 if epoch % save_epoch == 0 and epoch > 0 and time.time() - last_save_time >= save_interval:
-                    pred_key[ball_name[1][0]] = blue_ball_model.pred_label.name if name == "ssq" else blue_ball_model.pred_sequence.name
+                    pred_key[ball_name[1][0]] = blue_ball_model.pred_label.name if name in ["ssq","sd"] else blue_ball_model.pred_sequence.name
                     if not os.path.exists(syspath):
                         os.mkdir(syspath)
                     # saver = tf.compat.v1.train.Saver()
@@ -348,7 +349,7 @@ def train_blue_ball_model(name, x_data, y_data):
                     
             except tf.errors.OutOfRangeError:
                 logger.info("训练完成！")
-                pred_key[ball_name[1][0]] = blue_ball_model.pred_label.name if name == "ssq" else blue_ball_model.pred_sequence.name
+                pred_key[ball_name[1][0]] = blue_ball_model.pred_label.name if name in ["ssq","sd"] else blue_ball_model.pred_sequence.name
                 if not os.path.exists(syspath):
                     os.mkdir(syspath)
                 # saver = tf.compat.v1.train.Saver()
@@ -418,7 +419,7 @@ def run(name, windows_size):
                         train_red_ball_model(name, x_data=train_data["red"]["x_data"], y_data=train_data["red"]["y_data"])
                         logger.info("训练耗时: {:.4f}".format(time.time() - start_time))
 
-                    if name not in ["pls", "kl8", "qxc", "sd"] and model_args[name]["model_args"]["blue_epochs"] > 0:
+                    if name not in ["pls", "kl8", "qxc"] and model_args[name]["model_args"]["blue_epochs"] > 0:
                         tf.compat.v1.reset_default_graph()  # 重置网络图
 
                         logger.info("开始训练【{}】蓝球模型...".format(name_path[name]["name"]))

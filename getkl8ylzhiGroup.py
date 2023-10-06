@@ -2,8 +2,10 @@ import asyncio
 from pyppeteer import launch
 from bs4 import BeautifulSoup
 
+import os
+os.environ['PYPPETEER_DOWNLOAD_HOST'] = 'https://npm.taobao.org/mirrors'
 async def main():
-    browser = await launch()
+    browser = await launch(headless=True,options={'args': ['--no-sandbox']})
     page = await browser.newPage()
     await page.goto('https://www.917500.cn/kt8/yl/100.html')
 

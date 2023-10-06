@@ -187,11 +187,13 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
                     if name in ["sd"] and flag == 1:
                         item[u"期数"] = get_current_number(name)
-                        numlist = ['0', '7', '6']
+                        numlist = ['6', '3', '8']
                         red_nums = len(numlist)
+                        sumvalue=0
                         for i in range(red_nums):
                             item[u"红球_{}".format(i + 1)] = numlist[i]
-                        item[u"蓝球_{}".format(1)] = str(13)
+                            sumvalue = sumvalue+int(numlist[i])
+                        item[u"蓝球"] = str(sumvalue)
                         data.append(item)
                         flag = 0
                     continue
@@ -273,8 +275,7 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 item[u"期数"] = ori_data.iloc[i, 1]
                 for j in range(3):
                     item[u"红球_{}".format(j+1)] = ori_data.iloc[i, j+2]
-                for k in range(1):
-                    item[u"蓝球_{}".format(k+1)] = ori_data.iloc[i, 4+k]
+                item[u"蓝球"] = ori_data.iloc[i, 5]
                 data.append(item)
             elif name in ["pls", "qxc"]:
                 # if name == "qxc":
@@ -553,7 +554,7 @@ def get_red_ball_predict_result(predict_features, sequence_len, windows_size):
 def get_blue_ball_predict_result(name, predict_features, sequence_len, windows_size):
     """ 获取蓝球预测结果
     """
-    if name == "ssq":
+    if name in ["ssq","sd"]:
         data = predict_features[[ball_name[1][0]]].values.astype(int) - 1
         with blue_graph.as_default():
             softmax = tf.compat.v1.get_default_graph().get_tensor_by_name(pred_key_d[ball_name[1][0]])
@@ -561,9 +562,19 @@ def get_blue_ball_predict_result(name, predict_features, sequence_len, windows_s
                 "inputs:0": data.reshape(1, windows_size)
             })
         return pred
+    # elif name =="sd":
+    #     name_list = [(ball_name[1], i + 1) for i in range(sequence_len)]
+    #     data = predict_features[["{}_{}".format(name[0], i) for name, i in name_list]].values.astype(int)
+    #     with blue_graph.as_default():
+    #         reverse_sequence = tf.compat.v1.get_default_graph().get_tensor_by_name(pred_key_d[ball_name[1][0]])
+    #         pred = blue_sess.run(reverse_sequence, feed_dict={
+    #             "inputs:0": data.reshape(1, windows_size, sequence_len),
+    #             "sequence_length:0": np.array([sequence_len] * 1)
+    #         })
+    #     return pred, name_list
     else:
         name_list = [(ball_name[1], i + 1) for i in range(sequence_len)]
-        data = predict_features[["{}_{}".format(name[0], i) for name, i in name_list]].values.astype(int) - 1
+        data = predict_features[["{}_{}".format(name[0], i) for name, i in name_list]].values.astype(int)
         with blue_graph.as_default():
             reverse_sequence = tf.compat.v1.get_default_graph().get_tensor_by_name(pred_key_d[ball_name[1][0]])
             pred = blue_sess.run(reverse_sequence, feed_dict={
