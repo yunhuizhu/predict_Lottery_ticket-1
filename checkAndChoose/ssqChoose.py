@@ -1,7 +1,7 @@
 from collections import Counter
 
 import csv
-filename = "/Users/zhuyunhui/PycharmProjects/predict_Lottery_ticket-1/checkAndChoose/zip/ssq_20231004.csv"  # 替换为你的CSV文件名
+filename = "./zip/ssq_20231007.csv"  # 替换为你的CSV文件名
 
 ckRedMap = {}  # 创建一个空字典来存储行号和列表的映射
 ckBlueMap = {}  # 创建一个空字典来存储行号和列表的映射
