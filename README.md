@@ -57,4 +57,9 @@ python run_predict.py  --name ssq --windows_size 3,5,7  # 执行双色球模型�
 # 注意事项：
 1. 使用高于1个batch_size训练后，不能立即预测，必须使用1个batch_size再次训练保存才可以，应该是batch_size维度被保存在inputs里面的原因，也可使用--predict_pro 1 参数进行这个动作
 2. 使用GPU推导时使用的是RNN的CudnnLSTM而非Keras的LSTM，因此两个模型保存的checkpoint不通用！
+## mac m1注意
+* 使用pip install tensorflow==2.3.0 下载对应版本，之后再执行 pip install -r requirements.txt
+
+
+
 

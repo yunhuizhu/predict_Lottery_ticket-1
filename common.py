@@ -12,6 +12,8 @@ import datetime
 import numpy as np
 import tensorflow as tf
 import warnings
+import asyncio
+from pyppeteer import launch
 
 
 def get_data_run(name, cq=0):
@@ -68,7 +70,26 @@ def get_current_number(name):
     else:
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
     return current_num
+async def get_current_number_gdfc36x7(name):
+    browser = await launch(headless=True,options={'args': ['--no-sandbox']})
+    page = await browser.newPage()
+    await page.goto('https://tools.17500.cn/tb/gdfc36x7/hmfb?limit=400')
 
+    content = await page.content()
+    soup = BeautifulSoup(content, 'html.parser')
+
+    tbody = soup.find('tbody', {'id': 'body'})
+    trs = tbody.find_all('tr')
+    trs.reverse()
+    for tr in trs:
+        tds = tr.find_all('td', {'class': 'bc'})
+        if len(tds) == 2 and tds[0].text.isdigit():
+            current_num = tds[0].text.strip()
+            print(tds[0].text, tds[1].text.replace('|', ','))
+            break
+
+    await browser.close()
+    return current_num
 def spider_cq(name="kl8", start=1, end=999999, mode="train", windows_size=0):
     if name == "kl8" and mode == "train":
         url = "https://data.917500.cn/kl81000_cq_asc.txt"
@@ -149,7 +170,8 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
                     if name in ["sd"] and flag ==1:
                         item[u"期数"] = get_current_number(name)
-                        numlist=['6','8','0']
+                        # numlist=['4','7','8']
+                        numlist=asyncio.get_event_loop().run_until_complete(get3dNewest())
                         red_nums = len(numlist)
                         for i in range(red_nums):
                             item[u"红球_{}".format(i + 1)] = numlist[i]
@@ -465,6 +487,31 @@ def predict_run(name):
     filedata.append(_data.copy())
     filetitle = _title.copy()
     return filedata, filetitle
+async def get3dNewest():
+        browser = await launch(headless=True,options={'args': ['--no-sandbox']})
+        page = await browser.newPage()
+        await page.goto('https://www.917500.cn/sdtgj/m/kjfb.html')
+
+        content = await page.content()
+        soup = BeautifulSoup(content, 'html.parser')
+
+        # 获取id为'body'的body标签
+        body = soup.find('tbody', id='body')
+
+        # 获取body中的所有tr标签，并取最后一个
+        last_tr = body.find_all('tr')[-1]
+
+        # 获取last_tr中第二个class为'k1'的td标签
+        second_td = last_tr.find_all('td', class_='k1')[1]
+
+        # 获取td标签中的文本，并将其分割成一个数组
+        # values = [int(x) for x in second_td.text.split() if x.isdigit()]
+        num_list= [int(i) for i in str(second_td.text.split()[0])]
+
+        print(f'{num_list}')
+
+        await browser.close()
+        return num_list
 
 
 # if __name__ == "__main__":
