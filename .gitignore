@@ -1,11 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 model/
-data/
+#data/
 predict/
 *.py[cod]
 *$py.class
-*.csv
+#*.csv
 *txt
 
 # C extensions

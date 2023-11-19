@@ -1,7 +1,7 @@
 from collections import Counter
 import csv
 
-filename = "./zip/kl8_20231010.csv"  # 替换为你的CSV文件名
+filename = "./zip/kl8_20231112.csv"  # 替换为你的CSV文件名
 
 ckMap = {}  # 创建一个空字典来存储行号和列表的映射
 
@@ -44,18 +44,20 @@ leng = [2,10,30,31,37,39,46,50,52,60,64]  # 请用实际数字替换
 zx = [1,9,11,16,14,24,47,27,79,57,37,50]  # 请用实际数字替换
 # ckMap = {'3':ck3,'4':ck4,'5':ck5,'7':ck7,'9':ck9,'10':ck10,'11':ck11,'12':ck12,'13':ck13,'14':ck14,'15':ck15,'20':ck20}
 ylMap={'1':yl_fqn_1,'2':yl_fqn_2,'3':yl_fqn_3,'4':yl_fqn_4,'5':yl_fqn_5,'6':yl_fqn_6,'7':yl_fqn_7,'8':yl_fqn_8,'9':yl_fqn_9,'10':yl_fqn_10}
-checkMap={0: {'5': 1, '10': 0, '12': 0}, 1: {'1': 0, '2': 0, '5': 3, '8': 1, '9': 1, '10': 1}, 2: {'2': 2, '6': 2, '10': 3}, 3: {'3': 1, '4': 3, '12': 3}, 4: {'2': 3, '6': 3, '7': 5}, 5: {'3': 6, '6': 4}, 6: {'9': 5}, 7: {'3': 9, '4': 9, '5': 5, '8': 8, '12': 6}, 8: {'1': 7, '2': 6, '9': 10, '10': 7, '12': 8}, 9: {'1': 9, '2': 7, '3': 11, '9': 12}, 10: {'1': 10, '11': 10}, 11: {'2': 10, '4': 11, '5': 8, '7': 9, '8': 10, '9': 14}, 12: {'10': 12}, 14: {'6': 11, '7': 12, '10': 14, '12': 10}, 15: {'3': 15, '8': 13, '9': 15, '11': 12}, 16: {'2': 13, '5': 13, '12': 12}, 17: {'10': 16, '11': 13}, 18: {'6': 14}, 19: {'2': 16, '3': 18, '5': 18, '12': 16}}
+# checkMap={0: {'5': 1, '10': 0, '12': 0}, 1: {'1': 0, '2': 0, '5': 3, '8': 1, '9': 1, '10': 1}, 2: {'2': 2, '6': 2, '10': 3}, 3: {'3': 1, '4': 3, '12': 3}, 4: {'2': 3, '6': 3, '7': 5}, 5: {'3': 6, '6': 4}, 6: {'9': 5}, 7: {'3': 9, '4': 9, '5': 5, '8': 8, '12': 6}, 8: {'1': 7, '2': 6, '9': 10, '10': 7, '12': 8}, 9: {'1': 9, '2': 7, '3': 11, '9': 12}, 10: {'1': 10, '11': 10}, 11: {'2': 10, '4': 11, '5': 8, '7': 9, '8': 10, '9': 14}, 12: {'10': 12}, 14: {'6': 11, '7': 12, '10': 14, '12': 10}, 15: {'3': 15, '8': 13, '9': 15, '11': 12}, 16: {'2': 13, '5': 13, '12': 12}, 17: {'10': 16, '11': 13}, 18: {'6': 14}, 19: {'2': 16, '3': 18, '5': 18, '12': 16}}
 # 初始化结果字典
 result = {}
 
+for count, numbers in ckMap.items():
+    print("ck"+count, numbers)
 # 遍历map
-for key, value in checkMap.items():
-    for set_id, position in value.items():
-        # 从集合中获取对应位置的数字
-        number = ckMap[set_id][position]
-        if key not in result:
-            result[key] = {}
-        result[key][set_id] = number
+# for key, value in checkMap.items():
+#     for set_id, position in value.items():
+#         # 从集合中获取对应位置的数字
+#         number = ckMap[set_id][position]
+#         if key not in result:
+#             result[key] = {}
+#         result[key][set_id] = number
 
 # 打印结果
 print(result)
@@ -92,13 +94,13 @@ for  cjkey,cjvalue in cjMap.items():
 #             keys.add("yl"+key)
 #     if keys:
 #         print(f"zx_{i+1}: {keys}:value:{value}")
-for key in ylMap:
-    keys = set()
-    for i, value in enumerate(zx):
-        if value in ylMap[key]:
-            keys.add("yl" + key+":"+str(value))
-    if keys:
-        print(f"{keys}")
+# for key in ylMap:
+#     keys = set()
+#     for i, value in enumerate(zx):
+#         if value in ylMap[key]:
+#             keys.add("yl" + key+":"+str(value))
+#     if keys:
+#         print(f"{keys}")
 zx_lh=set(zx)&set(lh)
 print(f"zx_lh:{zx_lh}")
 zx_re=set(zx)&set(re)
@@ -144,23 +146,23 @@ for count, numbers in ckcommons.items():
      temp = set(numbers)&set(zx)
      if temp:
          print(f"zx_ckcommon{count}: {sorted(temp)}")
-zxMap = {}
-for i in range(20):
-    zxIndexValue=zx[i]
-    zx_ck_index_eq=[]
-    for ck_key, ck_value in ckMap.items():
-        ck_value = list(ck_value)
-        if i < len(ck_value):
-            if ck_value[i] == zxIndexValue:
-                zx_ck_index_eq.append("ck_"+ck_key)
-            if i not in zxMap:
-                zxMap[i] = {ck_value[i]: ["ck_"+ck_key]}
-            else:
-                if ck_value[i] in zxMap[i]:
-                    zxMap[i][ck_value[i]].append("ck_"+ck_key)
-                else:
-                    zxMap[i][ck_value[i]] = ["ck_"+ck_key]
-    if zx_ck_index_eq:
-        print(f"zxindex_{i}:{zxIndexValue}:{zx_ck_index_eq}")
-for  cjkey,cjvalue in zxMap.items():
-    print(f"{cjkey}: {cjvalue}")
+# zxMap = {}
+# for i in range(20):
+#     zxIndexValue=zx[i]
+#     zx_ck_index_eq=[]
+#     for ck_key, ck_value in ckMap.items():
+#         ck_value = list(ck_value)
+#         if i < len(ck_value):
+#             if ck_value[i] == zxIndexValue:
+#                 zx_ck_index_eq.append("ck_"+ck_key)
+#             if i not in zxMap:
+#                 zxMap[i] = {ck_value[i]: ["ck_"+ck_key]}
+#             else:
+#                 if ck_value[i] in zxMap[i]:
+#                     zxMap[i][ck_value[i]].append("ck_"+ck_key)
+#                 else:
+#                     zxMap[i][ck_value[i]] = ["ck_"+ck_key]
+#     if zx_ck_index_eq:
+#         print(f"zxindex_{i}:{zxIndexValue}:{zx_ck_index_eq}")
+# for  cjkey,cjvalue in zxMap.items():
+#     print(f"{cjkey}: {cjvalue}")

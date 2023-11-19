@@ -138,7 +138,7 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
     if mode == "train":
         url, path = get_url(name)
         # limit = int(end) - int(start) + 1
-        limit = 365
+        limit = 730
         url = "{}{}".format(url, path.format(int(start), int(end), limit))
         r = requests.get(url=url, verify=False)
         r.encoding = "gb2312"
@@ -170,8 +170,8 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                 if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
                     if name in ["sd"] and flag ==1:
                         item[u"期数"] = get_current_number(name)
-                        # numlist=['4','7','8']
-                        numlist=asyncio.get_event_loop().run_until_complete(get3dNewest())
+                        numlist=['5','9','4']
+                        # numlist=asyncio.get_event_loop().run_until_complete(get3dNewest())
                         red_nums = len(numlist)
                         for i in range(red_nums):
                             item[u"红球_{}".format(i + 1)] = numlist[i]

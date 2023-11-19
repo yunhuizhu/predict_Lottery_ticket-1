@@ -1,7 +1,7 @@
 from collections import Counter
 
 import csv
-filename = "./zip/ssq_20231008.csv"  # 替换为你的CSV文件名
+filename = "./zip/ssq_20231110.csv"  # 替换为你的CSV文件名
 
 ckRedMap = {}  # 创建一个空字典来存储行号和列表的映射
 ckBlueMap = {}  # 创建一个空字典来存储行号和列表的映射
@@ -47,6 +47,19 @@ for count, numbers in ckBlueMap.items():
     print("ckBlue"+count, numbers)
 remain_red = set(range(1, 34))
 remain_blue = set(range(1, 17))
+cjRedMap = {}
+for i in range(6):
+    for ck_key, ck_value in ckRedMap.items():
+        if i < len(ck_value):
+            if i not in cjRedMap:
+                cjRedMap[i] = {ck_value[i]: ["ckRed_"+ck_key]}
+            else:
+                if ck_value[i] in cjRedMap[i]:
+                    cjRedMap[i][ck_value[i]].append("ckRed_"+ck_key)
+                else:
+                    cjRedMap[i][ck_value[i]] = ["ckRed_"+ck_key]
+for  cjkey,cjvalue in cjRedMap.items():
+    print(f"{cjkey}: {cjvalue}")
 for count, numbers in ckRedMap.items():
     remain_red = remain_red-set(numbers)
     temp = set(numbers) & set(rxRed)
