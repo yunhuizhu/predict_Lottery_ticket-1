@@ -2,14 +2,14 @@ import pandas as pd
 from collections import Counter
 
 # 读取csv文件，假设文件名为data.csv，且包含表头
-df = pd.read_csv('data/kl8/data.csv', header=0)
+# df = pd.read_csv('data/kl8/data.csv', header=0)
 # 读取csv文件的前100行，假设文件名为data.csv，且包含表头
-# df = pd.read_csv('data/kl8/data.csv', header=0, nrows=100)
+df = pd.read_csv('data/kl8/data.csv', header=0, nrows=20)
 # 去掉前两列
 df = df.iloc[:,2:]
 
 # 统计19和其他数字一起出现的次数
-searchNum = 71
+searchNum = 16
 counter_19 = Counter()
 for index, row in df.iterrows():
     if searchNum in row.values:
