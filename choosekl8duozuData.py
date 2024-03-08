@@ -10,7 +10,7 @@ df = pd.read_csv('data/kl8/data.csv', header=0)
 df = df.iloc[:,2:]
 r =4
 # 统计19和其他数字一起出现的次数
-searchNum = [21]
+searchNum = [45,63]
 # 统计所有数字对出现的次数
 counter_pairs = Counter()
 for index, row in df.iterrows():
@@ -37,6 +37,6 @@ for index, row in df.iterrows():
     #                 counter_19[pair] += 1
 
 # 找出与19一起出现次数最多的数字
-most_common_19 = counter_searchNum.most_common(10)  # 排除19自身，取前5个
+most_common_19 = counter_searchNum.most_common(40)  # 排除19自身，取前5个
 for num, count in most_common_19[1:]:  # 排除19自身
     print(f'{searchNum}与{num}一起出现的次数最多，次数为{count}')
