@@ -2,7 +2,7 @@ import csv
 from collections import Counter
 
 # 读取CSV文件
-with open('./zip/sd_20240320.csv', 'r') as file:
+with open('./zip/sd_20240426.csv', 'r') as file:
     reader = csv.reader(file)
     next(reader)  # 跳过第一行
     columns = [[] for _ in range(3)]  # 创建三个数组，分别用于存储每列的值

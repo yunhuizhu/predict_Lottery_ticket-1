@@ -1,7 +1,7 @@
 from collections import Counter
 
 import csv
-filename = "./zip/ssq_20240227.csv"  # 替换为你的CSV文件名
+filename = "./zip/ssq_20240424.csv"  # 替换为你的CSV文件名
 
 ckRedMap = {}  # 创建一个空字典来存储行号和列表的映射
 ckBlueMap = {}  # 创建一个空字典来存储行号和列表的映射
@@ -28,7 +28,7 @@ for i in range(1, 34):
     if i not in groups:
         noNum.append(i)
 shahao =[]
-xiaoyu3=[]
+feishahao=[]
 ckcommons = {}
 for number, count in counter.items():
     if count not in ckcommons:
@@ -37,18 +37,17 @@ for number, count in counter.items():
         ckcommons[count].append(number)
 #大于4个的单独列出来并打印出来。小于4个的也单独列出来并打印出来
 for count, numbers in ckcommons.items():
-    if count<2:
-        xiaoyu3+= numbers
-    if count > 2:
+    if count==1:
+        shahao += numbers
+        print("red ckcommons ==1 :", count, numbers)
+    if count >= 2:
+        feishahao+= numbers
         #numbers是一个列表，里面是数字，sh是一个列表，里面是数字，把numbers放到sh中
-        shahao+= numbers
         print("red ckcommons > 2:", count, numbers)
-    else:
-        print("red ckcommons < 2:", count, numbers)
 
 print("red noNum:", noNum)
 print("red shahao:", list(set(shahao)))
-print("red xiaoyu3:", list(set(xiaoyu3)))
+print("red feishahao:", list(set(feishahao)))
 
 # 查看对应数字有多少个，大于4个的单独列出来并打印出来。小于4个的也单独列出来并打印出来
 groups = []
@@ -63,9 +62,8 @@ noNum = []
 for i in range(1, 17):
     if i not in groups:
         noNum.append(i)
-print("noNum:", noNum)
 shahao =[]
-xiaoyu3=[]
+feishahao=[]
 ckcommons = {}
 for number, count in counter.items():
     if count not in ckcommons:
@@ -75,13 +73,12 @@ for number, count in counter.items():
 #大于4个的单独列出来并打印出来。小于4个的也单独列出来并打印出来
 for count, numbers in ckcommons.items():
     if count<2:
-        xiaoyu3+= numbers
+        feishahao+= numbers
+        print("blue ckcommons < 2:", count, numbers)
     if count >= 2:
         #numbers是一个列表，里面是数字，sh是一个列表，里面是数字，把numbers放到sh中
         shahao+= numbers
         print("blue ckcommons > 2:", count, numbers)
-    else:
-        print("blue  ckcommons < 2:", count, numbers)
 print("blue shahao:", list(set(shahao)))
-print("blue xiaoyu3:", list(set(xiaoyu3)))
-print("blue ckcommons:", list(set(ckcommons)))
+print("blue feishahao:", list(set(feishahao)))
+print("blue noNum:", noNum)

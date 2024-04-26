@@ -1,7 +1,8 @@
 from collections import Counter
 import csv
+import data_analysis
 
-filename = "./zip/kl8_20240307.csv"  # 替换为你的CSV文件名
+filename = "./zip/kl8_20240426.csv"  # 替换为你的CSV文件名
 
 ckMap = {}  # 创建一个空字典来存储行号和列表的映射
 
@@ -26,7 +27,7 @@ with open(filename, 'r') as file:
 # ck15 = [1,2,3,4,9,18,26,27,45,47,48,52,53,54,57,59,62,66,69,78]  # 请用实际数字替换
 # ck20 = [2,3,12,15,16,23,24,26,32,34,39,41,43,44,53,56,61,69,76,80]  # 请用实际数字替换
 
-cj = [1,6,8,10,18,21,22,24,35,40,41,47,51,55,66,70,74,75,77,78]  # 请用实际数字替换
+cj = [3,11,19,23,25,26,27,31,41,45,46,50,54,57,59,62,65,66,74,75]  # 请用实际数字替换
 # cj = [1,4,7,8,10,15,21,27,31,33,35,37,43,44,49,51,63,64,66,74]  # 请用实际数字替换
 # checkMap=checkMap={1: {'3': 2}, 2: {'1': 1}, 3: {'3': 3, '4': 1}, 4: {'3': 4, '5': 5, '6': 6}, 5: {'1': 4, '6': 9}, 6: {'2': 8}, 7: {'5': 10}, 8: {'3': 9}, 9: {'5': 12}, 10: {'3': 11, '5': 14}, 12: {'3': 13}, 13: {'5': 16, '6': 16}, 14: {'3': 14, '4': 11}, 15: {'3': 17, '4': 14, '5': 19}, 16: {'1': 15, '6': 18}, 17: {'1': 16, '3': 18}, 18: {'2': 17}, 19: {'4': 19}}
 # 初始化结果字典
@@ -74,10 +75,9 @@ for number in cj:
 for count, numbers in ckcommons.items():
     for number in numbers:
        for key, value in cjMap.items():
-           if number in value and count <= 4:
+           if number in value and number not in shahao and count<3:
                print("cjMap:", number, value, count,key)
-               if count<3:
-                   xuanze.append(number);
+               xuanze.append(number);
 #cjMap noNum中存在则打印出来
 for key, value in cjMap.items():
     for number in noNum:
@@ -87,7 +87,11 @@ for key, value in cjMap.items():
 #xz去重打印
 print("xuanze:", list(set(xuanze)))
 print("nonum:", list(set(noNum)))
+#打印顺序排序打印
+
 print("shahao:", list(set(shahao)))
 print("xiaoyu3:", list(set(xiaoyu3)))
 #xy3跟xz的
 print("xiaoyu3_xuanze:", list(set(xiaoyu3) & set(xuanze)))
+df = data_analysis.read_and_clean_data(filename)
+data_analysis.remove_and_count(df, shahao,4)
