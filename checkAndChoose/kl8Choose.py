@@ -1,7 +1,7 @@
 from collections import Counter
 import csv
 
-filename = "./zip/kl8_20231112.csv"  # 替换为你的CSV文件名
+filename = "./zip/kl8_20231008.csv"  # 替换为你的CSV文件名
 
 ckMap = {}  # 创建一个空字典来存储行号和列表的映射
 
@@ -25,39 +25,36 @@ with open(filename, 'r') as file:
 # ck14 = [5,8,17,18,19,24,25,29,31,35,36,47,51,59,61,65,70,72,73,75]  # 请用实际数字替换
 # ck15 = [1,2,3,4,9,18,26,27,45,47,48,52,53,54,57,59,62,66,69,78]  # 请用实际数字替换
 # ck20 = [2,3,12,15,16,23,24,26,32,34,39,41,43,44,53,56,61,69,76,80]  # 请用实际数字替换
-yl_fqn_1= [10, 30, 50, 64, 41, 56, 2, 37]
-yl_fqn_2= [31, 46, 4, 12, 19, 27, 48, 60]
-yl_fqn_3= [79, 18, 23, 28, 29, 57, 59, 77]
-yl_fqn_4= [1, 43, 45, 52, 67, 11, 15, 35]
-yl_fqn_5= [63, 66, 71, 7, 17, 32, 39, 44]
-yl_fqn_6= [68, 70, 72, 75, 76, 78, 5, 14]
-yl_fqn_7= [20, 22, 24, 33, 36, 38, 40, 49]
-yl_fqn_8= [51, 54, 58, 62, 3, 6, 8, 9]
-yl_fqn_9= [13, 16, 21, 25, 26, 34, 42, 47]
-yl_fqn_10= [53, 55, 61, 65, 69, 73, 74, 80]
-lh=[2,4,10,12,15,27,33,46,52,60,62,64,70,75,79]
-re = [11,29,33,58,62,67]  # 请用实际数字替换
-wen = [1,4,12,15,23,27,28,32,49,51,59,63,70,75,76,78,79]  # 请用实际数字替换
-leng = [2,10,30,31,37,39,46,50,52,60,64]  # 请用实际数字替换
+yl_fqn_1= [22, 65, 38, 10, 30, 50, 64, 41]
+yl_fqn_2= [56, 2, 3, 20, 37, 73, 8, 24]
+yl_fqn_3= [25, 31, 46, 4, 6, 12, 19, 26]
+yl_fqn_4= [27, 48, 60, 79, 18, 23, 28, 29]
+yl_fqn_5= [53, 54, 55, 57, 59, 74, 77, 1]
+yl_fqn_6= [5, 9, 14, 34, 43, 45, 52, 67]
+yl_fqn_7= [69, 11, 13, 15, 21, 35, 36, 40]
+yl_fqn_8= [61, 63, 66, 71, 7, 16, 17, 32]
+yl_fqn_9= [33, 39, 42, 44, 47, 49, 51, 58]
+yl_fqn_10= [62, 68, 70, 72, 75, 76, 78, 80]
+lh=[6,8,15,38,41,46,50,59,63,67,73,79]
+re = [6,11,14,27,29,54,67,79]  # 请用实际数字替换
+wen = [1,4,8,12,15,20,23,24,25,59,63,73]  # 请用实际数字替换
+leng = [2,3,10,22,30,37,38,41,46,50,64,65]  # 请用实际数字替换
 # zx = [2,8,12,13,19,22,25,31,38,40,42,44,48,52,65,68,71,72,77,78]  # 请用实际数字替换
-# zx = [1,9,11,14,16,23,25,29,35,37,41,46,52,53,62,67,73,74,75,77]  # 请用实际数字替换
-zx = [1,9,11,16,14,24,47,27,79,57,37,50]  # 请用实际数字替换
+zx = [2,4,5,9,11,19,29,31,35,38,41,42,56,59,67,68,72,73,77,79]  # 请用实际数字替换
 # ckMap = {'3':ck3,'4':ck4,'5':ck5,'7':ck7,'9':ck9,'10':ck10,'11':ck11,'12':ck12,'13':ck13,'14':ck14,'15':ck15,'20':ck20}
 ylMap={'1':yl_fqn_1,'2':yl_fqn_2,'3':yl_fqn_3,'4':yl_fqn_4,'5':yl_fqn_5,'6':yl_fqn_6,'7':yl_fqn_7,'8':yl_fqn_8,'9':yl_fqn_9,'10':yl_fqn_10}
-# checkMap=checkMap={1: {'3': 2}, 2: {'1': 1}, 3: {'3': 3, '4': 1}, 4: {'3': 4, '5': 5, '6': 6}, 5: {'1': 4, '6': 9}, 6: {'2': 8}, 7: {'5': 10}, 8: {'3': 9}, 9: {'5': 12}, 10: {'3': 11, '5': 14}, 12: {'3': 13}, 13: {'5': 16, '6': 16}, 14: {'3': 14, '4': 11}, 15: {'3': 17, '4': 14, '5': 19}, 16: {'1': 15, '6': 18}, 17: {'1': 16, '3': 18}, 18: {'2': 17}, 19: {'4': 19}}
+checkMap={0: {'8': 0, '9': 0, '10': 0}, 1: {'5': 2, '11': 1}, 2: {'3': 3, '4': 2, '11': 3}, 3: {'11': 4}, 4: {'1': 2, '9': 3, '10': 4, '12': 0}, 5: {'1': 3, '8': 4, '11': 5, '12': 1}, 6: {'1': 4, '3': 5, '4': 4, '7': 1}, 7: {'1': 8, '7': 8, '12': 8}, 8: {'6': 7, '7': 9, '12': 9}, 9: {'1': 10, '2': 9, '3': 12, '6': 8, '12': 12}, 10: {'4': 11, '10': 6}, 11: {'3': 14, '4': 12, '5': 9, '6': 9, '11': 13}, 12: {'10': 7}, 13: {'2': 11, '3': 15, '8': 9, '12': 15}, 14: {'2': 13, '4': 15, '6': 13, '7': 14, '8': 14, '11': 16}, 15: {'1': 19, '2': 15, '6': 15, '9': 15}, 16: {'2': 16, '5': 15, '8': 16}, 17: {'5': 16, '8': 17, '10': 16}, 18: {'6': 18, '7': 17, '11': 18}, 19: {'10': 19}}
 # 初始化结果字典
 result = {}
 
-for count, numbers in ckMap.items():
-    print("ck"+count, numbers)
 # 遍历map
-# for key, value in checkMap.items():
-#     for set_id, position in value.items():
-#         # 从集合中获取对应位置的数字
-#         number = ckMap[set_id][position]
-#         if key not in result:
-#             result[key] = {}
-#         result[key][set_id] = number
+for key, value in checkMap.items():
+    for set_id, position in value.items():
+        # 从集合中获取对应位置的数字
+        number = ckMap[set_id][position]
+        if key not in result:
+            result[key] = {}
+        result[key][set_id] = number
 
 # 打印结果
 print(result)
@@ -94,13 +91,13 @@ for  cjkey,cjvalue in cjMap.items():
 #             keys.add("yl"+key)
 #     if keys:
 #         print(f"zx_{i+1}: {keys}:value:{value}")
-# for key in ylMap:
-#     keys = set()
-#     for i, value in enumerate(zx):
-#         if value in ylMap[key]:
-#             keys.add("yl" + key+":"+str(value))
-#     if keys:
-#         print(f"{keys}")
+for key in ylMap:
+    keys = set()
+    for i, value in enumerate(zx):
+        if value in ylMap[key]:
+            keys.add("yl" + key+":"+str(value))
+    if keys:
+        print(f"{keys}")
 zx_lh=set(zx)&set(lh)
 print(f"zx_lh:{zx_lh}")
 zx_re=set(zx)&set(re)
@@ -136,33 +133,26 @@ ckcommons[0]=noNum
 for count, numbers in ckcommons.items():
     if numbers:
      print(f"ckcommon{count}: {sorted(numbers)}")
-     # temp = set(numbers)&set(zx)
-     # if temp:
-     #     print(f"zx_ckcommon{count}: {sorted(temp)}")
-
-for count, numbers in ckcommons.items():
-    if numbers:
-     # print(f"ckcommon{count}: {sorted(numbers)}")
      temp = set(numbers)&set(zx)
      if temp:
          print(f"zx_ckcommon{count}: {sorted(temp)}")
-# zxMap = {}
-# for i in range(20):
-#     zxIndexValue=zx[i]
-#     zx_ck_index_eq=[]
-#     for ck_key, ck_value in ckMap.items():
-#         ck_value = list(ck_value)
-#         if i < len(ck_value):
-#             if ck_value[i] == zxIndexValue:
-#                 zx_ck_index_eq.append("ck_"+ck_key)
-#             if i not in zxMap:
-#                 zxMap[i] = {ck_value[i]: ["ck_"+ck_key]}
-#             else:
-#                 if ck_value[i] in zxMap[i]:
-#                     zxMap[i][ck_value[i]].append("ck_"+ck_key)
-#                 else:
-#                     zxMap[i][ck_value[i]] = ["ck_"+ck_key]
-#     if zx_ck_index_eq:
-#         print(f"zxindex_{i}:{zxIndexValue}:{zx_ck_index_eq}")
-# for  cjkey,cjvalue in zxMap.items():
-#     print(f"{cjkey}: {cjvalue}")
+zxMap = {}
+for i in range(20):
+    zxIndexValue=zx[i]
+    zx_ck_index_eq=[]
+    for ck_key, ck_value in ckMap.items():
+        ck_value = list(ck_value)
+        if i < len(ck_value):
+            if ck_value[i] == zxIndexValue:
+                zx_ck_index_eq.append("ck_"+ck_key)
+            if i not in zxMap:
+                zxMap[i] = {ck_value[i]: ["ck_"+ck_key]}
+            else:
+                if ck_value[i] in zxMap[i]:
+                    zxMap[i][ck_value[i]].append("ck_"+ck_key)
+                else:
+                    zxMap[i][ck_value[i]] = ["ck_"+ck_key]
+    if zx_ck_index_eq:
+        print(f"zxindex_{i}:{zxIndexValue}:{zx_ck_index_eq}")
+for  cjkey,cjvalue in zxMap.items():
+    print(f"{cjkey}: {cjvalue}")

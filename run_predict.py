@@ -8,7 +8,7 @@ import datetime
 from config import *
 from loguru import logger
 from common import setMiniargs, get_current_number, run_predict, predict_run,init, red_graph, blue_graph, pred_key_d, red_sess, blue_sess
-from common import tf as predict_tf
+import common as _common
 import pandas as pd
 
 parser = argparse.ArgumentParser()
@@ -41,12 +41,13 @@ if __name__ == '__main__':
             logger.info(path)
             logger.info("windows_size: {}".format(list_windows_size))
         for size in list_windows_size:
-            predict_tf.compat.v1.reset_default_graph()
-            red_graph = predict_tf.compat.v1.Graph()
-            blue_graph = predict_tf.compat.v1.Graph()
+            _common._ensure_tf()
+            _common.tf.compat.v1.reset_default_graph()
+            red_graph = _common.tf.compat.v1.Graph()
+            blue_graph = _common.tf.compat.v1.Graph()
             pred_key_d = {}
-            red_sess = predict_tf.compat.v1.Session(graph=red_graph)
-            blue_sess = predict_tf.compat.v1.Session(graph=blue_graph)
+            red_sess = _common.tf.compat.v1.Session(graph=red_graph)
+            blue_sess = _common.tf.compat.v1.Session(graph=blue_graph)
             current_number = get_current_number(args.name)
             run_predict(int(size))
             _data, _title = predict_run(args.name)

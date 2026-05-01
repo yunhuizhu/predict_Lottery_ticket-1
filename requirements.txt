@@ -1,11 +1,12 @@
 tensorflow-cpu==2.3.*
 # tensorflow-gpu==2.3.*
 tensorflow-addons==0.13.*
+pyppeteer==1.0.2
 requests
 keras
 beautifulsoup4
 pandas==1.0.0
-numpy==1.19.5
+numpy==1.18.5
 lxml
 loguru
 grpcio

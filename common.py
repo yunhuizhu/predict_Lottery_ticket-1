@@ -10,7 +10,6 @@ from config import *
 import json
 import datetime
 import numpy as np
-import tensorflow as tf
 import warnings
 import asyncio
 from pyppeteer import launch
@@ -49,24 +48,28 @@ def get_url(name):
         path = "newinc/jbzs_redblue.php?from=&to=&shujcount=0&sort=1&expect=-1"
     return url, path
 
+_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+}
+
 def get_current_number(name):
     """ 获取最新一期数字
     :return: int
     """
     url, _ = get_url(name)
     if name in ["qxc", "pls", "sd"]:
-        r = requests.get("{}{}".format(url, "inc/history.php"), verify=False)
+        r = requests.get("{}{}".format(url, "inc/history.php"), verify=False, headers=_HEADERS)
     elif name in ["ssq", "dlt"]:
-        r = requests.get("{}{}".format(url, "history.shtml"), verify=False)
+        r = requests.get("{}{}".format(url, "history.shtml"), verify=False, headers=_HEADERS)
     elif name in ["kl8"]:
-        r = requests.get("{}{}".format(url, "newinc/jbzs_redblue.php"), verify=False)
+        r = requests.get("{}{}".format(url, "newinc/jbzs_redblue.php"), verify=False, headers=_HEADERS)
     r.encoding = "gb2312"
     soup = BeautifulSoup(r.text, "lxml")
     if name in ["kl8"]:
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="to")["value"]
-    elif name in ["sd"]:
-        current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
-        current_num = str(int(current_num) + 1)
+    # elif name in ["sd"]:
+    #     current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
+    #     current_num = str(int(current_num) + 1)
     else:
         current_num = soup.find("div", class_="wrap_datachart").find("input", id="end")["value"]
     return current_num
@@ -138,9 +141,9 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
     if mode == "train":
         url, path = get_url(name)
         # limit = int(end) - int(start) + 1
-        limit = 730
+        limit = 365
         url = "{}{}".format(url, path.format(int(start), int(end), limit))
-        r = requests.get(url=url, verify=False)
+        r = requests.get(url=url, verify=False, headers=_HEADERS)
         r.encoding = "gb2312"
         soup = BeautifulSoup(r.text, "lxml")
         if name in ["ssq", "dlt", "kl8"]:
@@ -165,18 +168,19 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
                     item[u"蓝球_{}".format(j+1)] = tr.find_all("td")[6+j].get_text().strip()
                 data.append(item)
             elif name in ["pls", "sd", "qxc"]:
-                if len(tr.find_all("td")) < 2:
-                    continue
+                #if len(tr.find_all("td")) < 2:
+                #    continue
+                # if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
+                #     if name in ["sd"] and flag ==1:
+                #         item[u"期数"] = get_current_number(name)
+                #         numlist=['4','7','8']
+                #         red_nums = len(numlist)
+                #         for i in range(red_nums):
+                #             item[u"红球_{}".format(i + 1)] = numlist[i]
+                #         data.append(item)
+                #         flag =0
+                #     continue
                 if tr.find_all("td")[0].get_text().strip() == "注数" or tr.find_all("td")[1].get_text().strip() == "中奖号码":
-                    if name in ["sd"] and flag ==1:
-                        item[u"期数"] = get_current_number(name)
-                        numlist=['1','3','1']
-                        # numlist=asyncio.get_event_loop().run_until_complete(get3dNewest())
-                        red_nums = len(numlist)
-                        for i in range(red_nums):
-                            item[u"红球_{}".format(i + 1)] = numlist[i]
-                        data.append(item)
-                        flag =0
                     continue
                 item[u"期数"] = tr.find_all("td")[0].get_text().strip()
                 numlist = tr.find_all("td")[1].get_text().strip().split(" ")
@@ -250,17 +254,27 @@ def spider(name="ssq", start=1, end=999999, mode="train", windows_size=0):
 filedata = []
 filetitle = []
 
-# 关闭eager模式
-tf.compat.v1.disable_eager_execution()
-
 warnings.filterwarnings('ignore')
 
-red_graph = tf.compat.v1.Graph()
-blue_graph = tf.compat.v1.Graph()
+tf = None
+red_graph = None
+blue_graph = None
 pred_key_d = {}
-red_sess = tf.compat.v1.Session(graph=red_graph)
-blue_sess = tf.compat.v1.Session(graph=blue_graph)
+red_sess = None
+blue_sess = None
 mini_args = {}
+
+def _ensure_tf():
+    global tf, red_graph, blue_graph, red_sess, blue_sess
+    if tf is not None:
+        return
+    import tensorflow as _tf
+    tf = _tf
+    tf.compat.v1.disable_eager_execution()
+    red_graph = tf.compat.v1.Graph()
+    blue_graph = tf.compat.v1.Graph()
+    red_sess = tf.compat.v1.Session(graph=red_graph)
+    blue_sess = tf.compat.v1.Session(graph=blue_graph)
 # current_number = get_current_number(mini_args.name)
 
 def setMiniargs(args):
@@ -269,6 +283,7 @@ def setMiniargs(args):
 
 def init():
     global mini_args,pred_key_d, red_graph, blue_graph, red_sess, blue_sess, filedata, filetitle
+    _ensure_tf()
     filedata = []
     filetitle = []
     red_graph = tf.compat.v1.Graph()
@@ -280,6 +295,7 @@ def init():
 
 def run_predict(window_size):
     global pred_key_d, red_graph, blue_graph, red_sess, blue_sess
+    _ensure_tf()
     if window_size != 0:
         model_args[mini_args.name]["model_args"]["windows_size"] = window_size
     redpath = model_path + model_args[mini_args.name]["pathname"]['name'] + str(model_args[mini_args.name]["model_args"]["windows_size"]) + model_args[mini_args.name]["subpath"]['red']
@@ -383,6 +399,7 @@ def try_error(name, predict_features, windows_size):
 def get_red_ball_predict_result(predict_features, sequence_len, windows_size):
     """ 获取红球预测结果
     """
+    _ensure_tf()
     name_list = [(ball_name[0], i + 1) for i in range(sequence_len)]
     if mini_args.name not in ["pls", "qxc", "sd"]:
         hotfixed = 1
@@ -401,6 +418,7 @@ def get_red_ball_predict_result(predict_features, sequence_len, windows_size):
 def get_blue_ball_predict_result(name, predict_features, sequence_len, windows_size):
     """ 获取蓝球预测结果
     """
+    _ensure_tf()
     if name == "ssq":
         data = predict_features[[ball_name[1][0]]].values.astype(int) - 1
         with blue_graph.as_default():
@@ -487,31 +505,6 @@ def predict_run(name):
     filedata.append(_data.copy())
     filetitle = _title.copy()
     return filedata, filetitle
-async def get3dNewest():
-        browser = await launch(headless=True,options={'args': ['--no-sandbox']})
-        page = await browser.newPage()
-        await page.goto('https://www.917500.cn/sdtgj/m/kjfb.html')
-
-        content = await page.content()
-        soup = BeautifulSoup(content, 'html.parser')
-
-        # 获取id为'body'的body标签
-        body = soup.find('tbody', id='body')
-
-        # 获取body中的所有tr标签，并取最后一个
-        last_tr = body.find_all('tr')[-1]
-
-        # 获取last_tr中第二个class为'k1'的td标签
-        second_td = last_tr.find_all('td', class_='k1')[1]
-
-        # 获取td标签中的文本，并将其分割成一个数组
-        # values = [int(x) for x in second_td.text.split() if x.isdigit()]
-        num_list= [int(i) for i in str(second_td.text.split()[0])]
-
-        print(f'{num_list}')
-
-        await browser.close()
-        return num_list
 
 
 # if __name__ == "__main__":

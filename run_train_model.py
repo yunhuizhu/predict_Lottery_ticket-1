@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import warnings
 from common import get_data_run, setMiniargs, get_current_number, run_predict, predict_run,init, red_graph, blue_graph, pred_key_d, red_sess, blue_sess
-from common import tf as predict_tf
+import common as _common
 from config import *
 from modeling import LstmWithCRFModel, SignalLstmModel, tf
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
@@ -430,12 +430,12 @@ def run(name, windows_size):
                     with open("{}/{}".format(model_path + model_args[args.name]["pathname"]['name'] + str(model_args[args.name]["model_args"]["windows_size"]), pred_key_name), "w") as f:
                         json.dump(pred_key, f)
 
-                    predict_tf.compat.v1.reset_default_graph()
-                    red_graph = predict_tf.compat.v1.Graph()
-                    blue_graph = predict_tf.compat.v1.Graph()
+                    tf.compat.v1.reset_default_graph()
+                    red_graph = tf.compat.v1.Graph()
+                    blue_graph = tf.compat.v1.Graph()
                     pred_key_d = {}
-                    red_sess = predict_tf.compat.v1.Session(graph=red_graph)
-                    blue_sess = predict_tf.compat.v1.Session(graph=blue_graph)
+                    red_sess = tf.compat.v1.Session(graph=red_graph)
+                    blue_sess = tf.compat.v1.Session(graph=blue_graph)
                     current_number = get_current_number(args.name)
                     run_predict(int(w_size))
                     _data, _title = predict_run(args.name)
