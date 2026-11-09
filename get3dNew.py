@@ -20,12 +20,11 @@ async def main():
 
     # 获取last_tr中第二个class为'k1'的td标签
     second_td = last_tr.find_all('td', class_='k1')[1]
-    # print(f'{second_td.text.split()}')
-    # # 获取td标签中的文本，并将其分割成一个数组
-    # values = [int(x) for x in second_td.text.split() if x.isdigit()]
-    num_list = num_list =  [int(i) for i in str(second_td.text.split()[0])]
 
-    print(f'{num_list}')
+    # 获取td标签中的文本，并将其分割成一个数组
+    values = [int(x) for x in second_td.text.split() if x.isdigit()]
+
+    print(f'{values}')
 
     await browser.close()
 
