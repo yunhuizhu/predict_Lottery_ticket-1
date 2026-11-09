@@ -14,6 +14,15 @@ import tensorflow as tf
 import warnings
 import asyncio
 from pyppeteer import launch
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
+session = requests.Session()
+retry = Retry(
+    total=5,  # 最大重试次数
+    backoff_factor=1,  # 重试间隔时间因子
+    status_forcelist=[500, 502, 503, 504]  # 需要重试的状态码
+)
 
 
 def get_data_run(name, cq=0):

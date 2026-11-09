@@ -10,3 +10,4 @@ lxml
 loguru
 grpcio
 protobuf
+openpyxl

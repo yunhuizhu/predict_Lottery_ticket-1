@@ -2,7 +2,7 @@ from collections import Counter
 import csv
 import data_analysis
 
-filename = "./zip/kl8_20240425.csv"  # 替换为你的CSV文件名
+filename = "./zip/kl8_20241128.csv"  # 替换为你的CSV文件名
 
 ckMap = {}  # 创建一个空字典来存储行号和列表的映射
 
@@ -19,7 +19,7 @@ df = data_analysis.read_and_clean_data(filename)
 # counter_pairs = data_analysis.count_pairs(df)
 # data_analysis.print_common_pairs(counter_pairs)
 
-searchNums = [8,9,10,13,14,15,16,17,18,21,35,38,45,50,52,58,64,71,72,75]
+searchNums = [3,5,14,22,23,24,25,28,33,34,44,45,53,55,61,68,69,75,76,79]
 r=3
 counter_searchNums = data_analysis.search_pairs2(df, searchNums,r)
 # data_analysis.print_common_pairs(counter_searchNums)
