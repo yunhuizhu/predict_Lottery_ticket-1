@@ -4,7 +4,7 @@ import csv
 from itertools import combinations, product
 
 import data_analysis
-filename = "./zip/ssq_20261106.csv"  # 替换为你的CSV文件名
+filename = "./zip/ssq_20261104.csv"  # 替换为你的CSV文件名
 
 ckRedMap = {}  # 创建一个空字典来存储行号和列表的映射
 ckBlueMap = {}  # 创建一个空字典来存储行号和列表的映射
@@ -13,12 +13,12 @@ red_position_stats = {i: {} for i in range(6)}  # 双色球红球有6个位置
 blue_position_stats = {}  # 蓝球位置统计
 # cj_red = [1,5,6,7,9,14,16,18,23,27,29,30,32]  # 请用实际数字替换
 # cj_red = [1,2,13,21,23,29]  #n 请用实际数字替换
-cj_red_raw = [5,6,10,25,27,30,11]  #n 请用实际数字替换，最后一位是篮球
+cj_red_raw = [13,14,19,25,29,32,12]  #n 请用实际数字替换，最后一位是篮球
 cj_blue = [cj_red_raw[-1]]  # 最后一位是篮球
 cj_red = cj_red_raw[:-1]    # 前6位是红球
 red_sh=[]
 red_sh2=[]
-cj_red_pre = [13,14,19,25,29,32,12]
+cj_red_pre = [5,6,10,25,27,30,11]
 cj_blue_pre=[]
 
 with open(filename, 'r') as file:
